@@ -9,4 +9,7 @@ public class SoundCloud{
     //Map com todas as musicas
     private Map<Int,Ficheiro> musicas;
 
+    //Map com os pedidos
+    private Map<String,Peiddo> pedidos;
+
 }

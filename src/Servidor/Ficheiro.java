@@ -1,7 +1,8 @@
+package Servidor;
+
 import java.io.File;
 
 public class Ficheiro{
-
     //private Caminho pra musica
 
     private File file;
@@ -11,7 +12,6 @@ public class Ficheiro{
     private int ano;
 
     public Ficheiro(Ficheiro f){
-
         this.id=f.getId();
         this.nome=f.getNome();
         this.musico=f.getMusico();
@@ -70,7 +70,7 @@ public class Ficheiro{
         string.append(this.ano+'\n');
         return string.toString();
     }
-
+/*
     public boolean equals(Object obj){
         if(obj == this){
             return true;
@@ -80,6 +80,7 @@ public class Ficheiro{
         }
         Ficheiro f = (Ficheiro) obj;
         return f.getID().equals(this.id);
-
     }
+    */
 }
+

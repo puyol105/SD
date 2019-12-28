@@ -1,11 +1,16 @@
-public abstract class Utilizador{
+package Servidor;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+public abstract class Utilizador{
     private String username;
     private String password;
+    private ReentrantLock lock;
 
     public Utilizador(){
         this.username = "n/a";
         this.password = "n/a";
+        this.lock = new ReentrantLock();
     }
 
     public Utilizador(Utilizador c) {
@@ -16,6 +21,7 @@ public abstract class Utilizador{
     public Utilizador(String username, String password){
         this.username = username;
         this.password = password;
+        this.lock = new ReentrantLock();
     }
 
     public String getUsername(){
@@ -32,6 +38,14 @@ public abstract class Utilizador{
 
     public void setPassword(String password){
         this.password = password;
+    }
+    
+    public void lock(){
+        this.lock.lock();
+    }
+
+    public void unlock(){
+        this.lock.unlock();
     }
 
     public String toString(){
@@ -54,7 +68,5 @@ public abstract class Utilizador{
 
     }
 
-    public abstract Utilizador clone();
-
-
+    //public abstract Utilizador clone();
 }

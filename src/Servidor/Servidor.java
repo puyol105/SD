@@ -1,27 +1,23 @@
-import java.io.*;
-import java.net.*;
+package Servidor;
 
-public class Servidor{
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-    static public void main (String[] args){
-        ServerSocket s;
-        Socket c = null;
-        SoundCloud sc;
+public class Servidor {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(12345);
+        SoundCloud sc =  new SoundCloud();
 
-        try{
-            s = new ServerSocket(8080);
-            
-            while((c=s.accept()) != null){
-                BufferedReader read_socket = new BufferedReader(new InputStreamReader(c.getInputStream()));
-                PrintWriter write_socket = new PrintWriter(c.getOutputStream(),true);
+        while(true) {
+            Socket clSock;
 
-                
-            }
-            s.close();
+            clSock = serverSocket.accept();
+
+            Worker worker = new Worker(clSock);
+            Thread thread = new Thread(worker);
+
+            thread.start();
         }
-        catch(IOException e){
-            System.out.println(e.getMessage()); 
-        }
-
     }
 }

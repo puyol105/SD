@@ -1,9 +1,9 @@
 package Servidor;
 
-public class Musico extends Utilizador{
+public class Fan extends Utilizador{
     private String nome;
     
-    public Musico(String username, String password, String nome){
+    public Fan(String username, String password, String nome){
         super(username, password);
         this.nome = nome;
     }
@@ -11,4 +11,5 @@ public class Musico extends Utilizador{
     public String getNome(){
         return this.nome;
     }
+
 }

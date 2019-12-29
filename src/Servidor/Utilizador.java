@@ -16,6 +16,7 @@ public abstract class Utilizador{
     public Utilizador(Utilizador c) {
         this.username = c.getUsername();
         this.password = c.getPassword();
+        this.lock = new ReentrantLock();
     }
 
     public Utilizador(String username, String password){

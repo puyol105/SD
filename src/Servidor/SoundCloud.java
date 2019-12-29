@@ -24,17 +24,13 @@ public class SoundCloud{
         this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        try{
-            boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
-
-            if (!f){
-                Musico m = new Musico(username, pass, nome);
-                this.musicos.put(username, m);
-            }
+        boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
+        if (!f){
+            Musico m = new Musico(username, pass, nome);
+            this.musicos.put(username, m);
+            
         }
-        finally{
-            this.lockSC.unlock();
-        }
+        this.lockSC.unlock();
         return f;
     }
 
@@ -43,51 +39,42 @@ public class SoundCloud{
         this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        try{
-            boolean f = this.fans.containsKey(username) || this.musicos.containsKey(username);
-
-            if (!f){
-                Fan fan = new Fan(username, pass, nome);
-                this.fans.put(username, fan);
-            }
+        boolean f = this.fans.containsKey(username) || this.musicos.containsKey(username);
+        if (!f){
+            Fan fan = new Fan(username, pass, nome);
+            this.fans.put(username, fan);
         }
-        finally{
-            this.lockSC.unlock();
-        }
+        this.lockSC.unlock();
         return f;
+
     }
 
 
-    public Utilizador login(String username, String pass) throws UsernameInexistenteException, PasswordIncorretaException{
+    public Utilizador login(String username, String password) throws UsernameInexistenteException, PasswordIncorretaException{
         this.lockSC.lock();
-        try{
-            if(!this.fans.containsKey(username) || !this.musicos.containsKey(username)){
-                throw new UsernameInexistenteException("Username não existe!!!");
-            }
-            else if(!this.fans.get(username).getPassword().equals(password) || !this.musicos.get(username).getPassword().equals(password)){
-                throw new PasswordIncorretaException("A password está incorreta!!!");
-            } else{
-                if(this.musicos.containsKey(username)) return this.musicos.get(username);
-                if(this.fans.containsKey(username)) return this.fans.get(username);
-            }
+        Utilizador u = null;
+        
+        if(!this.fans.containsKey(username) || !this.musicos.containsKey(username)){
+            throw new UsernameInexistenteException("Username não existe!!!");
         }
-        finally{
-            this.lockSC.unlock();
+        else if(!this.fans.get(username).getPassword().equals(password) || !this.musicos.get(username).getPassword().equals(password)){
+            throw new PasswordIncorretaException("A password está incorreta!!!");
+        } else{
+            if(this.musicos.containsKey(username)) u = this.musicos.get(username);
+            if(this.fans.containsKey(username)) u = this.fans.get(username);
         }
+        this.lockSC.unlock();
+        return u;
     }
 
     //Adicionar música
     public Ficheiro upload(String nome, int ano, Musico musico){
         this.lockSC.lock();
-        try{
-            int next = this.musicas.size();
-            Ficheiro f = new Ficheiro(next,nome,musico,ano);
-            this.musicas.put(next,f);
-        }
-        finally{
-            this.lockSC.unlock();
-        }
-        return f;
+        int next = this.musicas.size();
+        Ficheiro f = new Ficheiro(next,nome,musico,ano);
+        this.musicas.put(next,f);
+        this.lockSC.unlock();
+        return f;        
     }
 
     //Descarregar música

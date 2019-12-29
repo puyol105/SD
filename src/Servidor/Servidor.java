@@ -5,8 +5,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor {
+    
+    public final static int SOCKET_PORT = 12345;
+
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(12345);
+        ServerSocket serverSocket = new ServerSocket(SOCKET_PORT);
         SoundCloud sc =  new SoundCloud();
 
         while(true) {
@@ -14,7 +17,7 @@ public class Servidor {
 
             clSock = serverSocket.accept();
 
-            Worker worker = new Worker(clSock);
+            Worker worker = new Worker(sc,clSock);
             Thread thread = new Thread(worker);
 
             thread.start();

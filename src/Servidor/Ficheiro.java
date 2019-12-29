@@ -1,11 +1,11 @@
 package Servidor;
 
-import java.io.File;
+//import java.io.File;
 
 public class Ficheiro{
     
     //private Caminho pra musica
-    private File file;
+    //private File file;
     private int id;
     private String nome;
     private Musico musico;

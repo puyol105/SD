@@ -52,8 +52,7 @@ public class SoundCloud{
     }
 
 
-    //int fm => 0 se é fã, 1 se é músico.
-    public Utilizador login(String username, String pass, int fm) throws UsernameInexistenteException, PasswordIncorretaException{
+    public Utilizador login(String username, String pass) throws UsernameInexistenteException, PasswordIncorretaException{
         this.lockSC.lock();
         try{
             if(!this.fans.containsKey(username) || !this.musicos.containsKey(username)){
@@ -62,8 +61,8 @@ public class SoundCloud{
             else if(!this.fans.get(username).getPassword().equals(password) || !this.musicos.get(username).getPassword().equals(password)){
                 throw new PasswordIncorretaException("A password está incorreta!!!");
             } else{
-                if(fm) return this.musicos.get(username);
-                if(!fm) return this.fans.get(username);
+                if(this.musicos.containsKey(username)) return this.musicos.get(username);
+                if(this.fans.containsKey(username)) return this.fans.get(username);
             }
         }
         finally{

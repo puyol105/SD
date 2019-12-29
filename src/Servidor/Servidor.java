@@ -14,7 +14,7 @@ public class Servidor {
 
             clSock = serverSocket.accept();
 
-            Worker worker = new Worker(clSock);
+            Worker worker = new Worker(sc,clSock);
             Thread thread = new Thread(worker);
 
             thread.start();

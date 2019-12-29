@@ -27,11 +27,11 @@ public class SoundCloud{
         boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
         if (!f){
             Musico m = new Musico(username, pass, nome);
-            this.musicos.put(username, m);
-            
+            this.musicos.put(username, m); 
         }
+
         this.lockSC.unlock();
-        return f;
+        return !f;
     }
 
 
@@ -44,25 +44,27 @@ public class SoundCloud{
             Fan fan = new Fan(username, pass, nome);
             this.fans.put(username, fan);
         }
-        this.lockSC.unlock();
-        return f;
 
+        this.lockSC.unlock();
+        return !f;
     }
 
 
     public Utilizador login(String username, String password) throws UsernameInexistenteException, PasswordIncorretaException{
         this.lockSC.lock();
+        
         Utilizador u = null;
         
-        if(!this.fans.containsKey(username) || !this.musicos.containsKey(username)){
-            throw new UsernameInexistenteException("Username não existe!!!");
-        }
-        else if(!this.fans.get(username).getPassword().equals(password) || !this.musicos.get(username).getPassword().equals(password)){
-            throw new PasswordIncorretaException("A password está incorreta!!!");
+        if(!fans.containsKey(username) && !musicos.containsKey(username)){
+            throw new UsernameInexistenteException("Username não existe.\n");
         } else{
-            if(this.musicos.containsKey(username)) u = this.musicos.get(username);
-            if(this.fans.containsKey(username)) u = this.fans.get(username);
+            u = fans.containsKey(username) ? fans.get(username) : musicos.get(username);
+            
+            if (!u.getPassword().equals(password)) {
+                throw new PasswordIncorretaException("A password está incorreta.\n");
+            }
         }
+        
         this.lockSC.unlock();
         return u;
     }

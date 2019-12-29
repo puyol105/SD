@@ -11,5 +11,4 @@ public class Fan extends Utilizador{
     public String getNome(){
         return this.nome;
     }
-
 }

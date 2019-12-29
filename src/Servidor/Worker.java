@@ -23,31 +23,38 @@ public class Worker implements Runnable {
 
         if (msg.toLowerCase().equals("help")){
             response = "List of commands:\n"
-                    +  "create [initialMoney]\n"
-                    +  "login [id]\n"
+                    +  "create [musico/fan] [username] [password] [nome]\n"
+                    +  "login [username] [password]\n"
                     +  "logout\n"
                     +  "close\n"
                     +  "exit\n";
         }
 
         if (parsedmsg[0].toLowerCase().equals("create") && parsedmsg.length > 1){
-            /*
-            int id = bank.createAccount(Float.parseFloat(parsedmsg[1]));
-            response = "Account created. ID: " + id + "\nType \"login [ID]\" to login.\n";
-            */
+            String musico_or_fan = parsedmsg[1];
+            String username = parsedmsg[2];
+            String password = parsedmsg[3];
+            String nome = parsedmsg[4];
+            boolean f = false;
+
+            if (musico_or_fan.equals("musico")) {
+                f = sc.createMusico(username, password, nome);
+                response = f ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed!\n";
+            } else if (musico_or_fan.equals("fan")) {
+                f = sc.createFan(username, password, nome);
+                response = f ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed...\n";
+            } else {
+                response = "Error.\n";
+            }
         }
 
-        if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 2){
-            /*
+        if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 3){
             try {
-                bank.check(id);
-                id = Integer.parseInt(parsedmsg[1]);
-                response = "Logged in to: " + parsedmsg[1] + ".\n";
-            } catch (InvalidAccount invalidAccount) {
-                id = -1;
-                response = invalidAccount.getErrorString();
+                Utilizador u = sc.login(parsedmsg[1], parsedmsg[2]);
+                response = "Logged in to: " + u.toString() + ".\n";
+            } catch (UsernameInexistenteException | PasswordIncorretaException e) {
+                response = e.toString();
             }
-            */
         }
 
         if (parsedmsg[0].toLowerCase().equals("logout") && parsedmsg.length == 2){
@@ -98,7 +105,7 @@ public class Worker implements Runnable {
             clSock.close();
         } catch (IOException e) {
             e.printStackTrace();
-
         }
     }
 }
+

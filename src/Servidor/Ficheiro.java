@@ -3,8 +3,8 @@ package Servidor;
 import java.io.File;
 
 public class Ficheiro{
+    
     //private Caminho pra musica
-
     private File file;
     private int id;
     private String nome;

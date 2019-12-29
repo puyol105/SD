@@ -4,51 +4,89 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SoundCloud{
+
     private HashMap<String, Fan> fans;
     private HashMap<String, Musico> musicos;
-
     private HashMap<Integer, Ficheiro> musicas;
-
     private HashMap<String, Pedido> pedidos;
     private ReentrantLock lockSC;
 
     public SoundCloud(){
         this.fans = new HashMap<>();
         this.musicos = new HashMap<>();
+        this.musicas = new HashMap<>();
         this.pedidos = new HashMap<>();
         this.lockSC = new ReentrantLock(); 
     }
 
 
     public boolean createMusico(String username, String pass, String nome){
-        lockSC.lock();
+        this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        boolean f = musicos.containsKey(username) ? true : false;
+        boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
 
         if (!f){
             Musico m = new Musico(username, pass, nome);
-            musicos.put(username, m);
+            this.musicos.put(username, m);
         }
 
-        lockSC.unlock();
+        this.lockSC.unlock();
         return f;
     }
 
 
     public boolean createFan(String username, String pass, String nome){
-        lockSC.lock();
+        this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        boolean f = fans.containsKey(username) ? true : false;
+        boolean f = this.fans.containsKey(username) || this.musicos.containsKey(username);
 
         if (!f){
             Fan fan = new Fan(username, pass, nome);
-            fans.put(username, fan);
+            this.fans.put(username, fan);
         }
 
-        lockSC.unlock();
+        this.lockSC.unlock();
         return f;
     }
+
+
+    //int fm => 0 se é fã, 1 se é músico.
+    public Utilizador login(String username, String pass, int fm) throws UsernameInexistenteException, PasswordIncorretaException{
+        this.lockSC.lock();
+        try{
+            if(!this.fans.containsKey(username) || !this.musicos.containsKey(username)){
+                throw new UsernameInexistenteException("Username não existe!!!");
+            }
+            else if(!this.fans.get(username).getPassword().equals(password) || !this.musicos.get(username).getPassword().equals(password)){
+                throw new PasswordIncorretaException("A password está incorreta!!!");
+            } else{
+                if(fm) return this.musicos.get(username);
+                if(!fm) return this.fans.get(username);
+            }
+        }
+        finally{
+            this.lockSC.unlock();
+        }
+    }
+
+    //Adicionar música
+    public Ficheiro upload(String nome, int ano, Musico musico){
+        this.lockSC.lock();
+        try{
+            int next = this.musicas.size();
+            Ficheiro f = new Ficheiro(next,nome,musico,ano);
+            this.musicas.put(next,f);
+            return f;
+        }
+        finally{
+            this.lockSC.unlock();
+        }
+    }
+
+    //Descarregar música
+
+    //Pesquisar música
 }
 

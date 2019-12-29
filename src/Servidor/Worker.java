@@ -35,17 +35,10 @@ public class Worker implements Runnable {
             String username = parsedmsg[2];
             String password = parsedmsg[3];
             String nome = parsedmsg[4];
-            boolean f = false;
+            boolean isMusico = parsedmsg[1].equals("musico");
 
-            if (musico_or_fan.equals("musico")) {
-                f = sc.createMusico(username, password, nome);
-                response = f ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed!\n";
-            } else if (musico_or_fan.equals("fan")) {
-                f = sc.createFan(username, password, nome);
-                response = f ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed...\n";
-            } else {
-                response = "Error.\n";
-            }
+            boolean r = sc.createUser(username, password, nome, isMusico);
+            response = r ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed!\n";
         }
 
         if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 3){

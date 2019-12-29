@@ -2,13 +2,12 @@ package Servidor;
 
 //import java.io.File;
 
-public class Ficheiro{
-    
+public class Ficheiro{ 
     //private Caminho pra musica
     //private File file;
     private int id;
     private String nome;
-    private Musico musico;
+    private Utilizador musico;
     private int ano;
 
     public Ficheiro(Ficheiro f){
@@ -18,7 +17,7 @@ public class Ficheiro{
         this.ano=f.getAno();
     }
 
-    public Ficheiro(int id, String nome, Musico m, int a){
+    public Ficheiro(int id, String nome, Utilizador m, int a){
         this.id=id;
         this.nome=nome;
         this.musico=m;
@@ -33,7 +32,7 @@ public class Ficheiro{
         return this.nome;
     }
 
-    public Musico getMusico(){
+    public Utilizador getMusico(){
         return this.musico;
     }
 
@@ -49,7 +48,7 @@ public class Ficheiro{
         this.nome=nome;
     }
     
-    public void setMusico(Musico m){
+    public void setMusico(Utilizador m){
         this.musico=m;
     }
 
@@ -65,22 +64,10 @@ public class Ficheiro{
         string.append("Título: ");
         string.append(this.nome+'\n');
         string.append("Músico: ");
-        string.append(this.musico.getNome()+'\n');
+        string.append(this.musico.getName()+'\n');
         string.append("Ano: ");
         string.append(this.ano+'\n');
         return string.toString();
     }
-/*
-    public boolean equals(Object obj){
-        if(obj == this){
-            return true;
-        }
-        if(obj == null || obj.getClass() != this.getClass()){
-            return false;
-        }
-        Ficheiro f = (Ficheiro) obj;
-        return f.getID().equals(this.id);
-    }
-    */
 }
 

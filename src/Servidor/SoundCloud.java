@@ -8,14 +8,14 @@ public class SoundCloud{
     private HashMap<String, Fan> fans;
     private HashMap<String, Musico> musicos;
     private HashMap<Integer, Ficheiro> musicas;
-    private HashMap<String, Pedido> pedidos;
+    //private HashMap<String, Pedido> pedidos;
     private ReentrantLock lockSC;
 
     public SoundCloud(){
         this.fans = new HashMap<>();
         this.musicos = new HashMap<>();
         this.musicas = new HashMap<>();
-        this.pedidos = new HashMap<>();
+        //this.pedidos = new HashMap<>();
         this.lockSC = new ReentrantLock(); 
     }
 
@@ -24,14 +24,17 @@ public class SoundCloud{
         this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
+        try{
+            boolean f = this.musicos.containsKey(username) || this.fans.containsKey(username);
 
-        if (!f){
-            Musico m = new Musico(username, pass, nome);
-            this.musicos.put(username, m);
+            if (!f){
+                Musico m = new Musico(username, pass, nome);
+                this.musicos.put(username, m);
+            }
         }
-
-        this.lockSC.unlock();
+        finally{
+            this.lockSC.unlock();
+        }
         return f;
     }
 
@@ -40,14 +43,17 @@ public class SoundCloud{
         this.lockSC.lock();
 
         //Verificar se username já esta ocupado
-        boolean f = this.fans.containsKey(username) || this.musicos.containsKey(username);
+        try{
+            boolean f = this.fans.containsKey(username) || this.musicos.containsKey(username);
 
-        if (!f){
-            Fan fan = new Fan(username, pass, nome);
-            this.fans.put(username, fan);
+            if (!f){
+                Fan fan = new Fan(username, pass, nome);
+                this.fans.put(username, fan);
+            }
         }
-
-        this.lockSC.unlock();
+        finally{
+            this.lockSC.unlock();
+        }
         return f;
     }
 
@@ -77,11 +83,11 @@ public class SoundCloud{
             int next = this.musicas.size();
             Ficheiro f = new Ficheiro(next,nome,musico,ano);
             this.musicas.put(next,f);
-            return f;
         }
         finally{
             this.lockSC.unlock();
         }
+        return f;
     }
 
     //Descarregar música

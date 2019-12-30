@@ -6,30 +6,19 @@ public class Utilizador{
     private String username;
     private String password;
     private String name;
-    private boolean isMusico;
     private ReentrantLock lock;
 
     public Utilizador(){
         this.username = "n/a";
         this.password = "n/a";
         this.name = "n/a";
-        this.isMusico = false; 
         this.lock = new ReentrantLock();
     }
 
-    public Utilizador(Utilizador c) {
-        this.username = c.getUsername();
-        this.password = c.getPassword();
-        this.name = c.getName();
-        this.isMusico = c.getIsMusico();
-        this.lock = new ReentrantLock();
-    }
-
-    public Utilizador(String username, String password, String name, boolean isMusico){
+    public Utilizador(String username, String password, String name){
         this.username = username;
         this.password = password;
         this.name = name;
-        this.isMusico = isMusico;
         this.lock = new ReentrantLock();
     }
 
@@ -40,13 +29,9 @@ public class Utilizador{
     public String getPassword(){
         return this.password;
     }
-   
+
     public String getName(){
         return this.name;
-    }
-
-    public boolean getIsMusico(){
-        return this.isMusico;
     }
 
     public void setUsername(String username){
@@ -61,10 +46,6 @@ public class Utilizador{
         this.name = name;
     }
 
-    public void setIsMusico(boolean isMusico){
-        this.isMusico = isMusico;
-    }
-    
     public void lock(){
         this.lock.lock();
     }
@@ -80,7 +61,6 @@ public class Utilizador{
         string.append("username = \"" + this.username + "\"");
         string.append(", password = \"" + this.password + "\"");
         string.append(", name = \"" + this.name + "\"");
-        string.append(", isMusico = \"" + this.isMusico + "\"");
         string.append(" }");
         return string.toString();
     }

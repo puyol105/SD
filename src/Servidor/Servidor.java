@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor {
-    
     public final static int SOCKET_PORT = 12345;
 
     public static void main(String[] args) throws IOException {

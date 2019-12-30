@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SoundCloud{
-
     private HashMap<String, Utilizador> users;
     private HashMap<Integer, Ficheiro> musicas;
     private ReentrantLock lockSC;
@@ -14,19 +13,18 @@ public class SoundCloud{
     public SoundCloud(){
         this.users = new HashMap<>();
         this.musicas = new HashMap<>();
-        this.lockSC = new ReentrantLock(); 
+        this.lockSC = new ReentrantLock();
     }
 
 
-    public boolean createUser(String username, String pass, String nome, boolean isMusico){
+    public boolean createUser(String username, String pass, String nome){
         this.lockSC.lock();
 
         //Verificar se username já esta ocupado
         boolean f = users.containsKey(username);
         if (!f){
-
-            Utilizador u = new Utilizador(username, pass, nome, isMusico);
-            users.put(username, u); 
+            Utilizador u = new Utilizador(username, pass, nome);
+            users.put(username, u);
         }
 
         this.lockSC.unlock();
@@ -35,64 +33,48 @@ public class SoundCloud{
 
     public Utilizador login(String username, String password) throws UsernameInexistenteException, PasswordIncorretaException{
         this.lockSC.lock();
-        
+
         Utilizador u = null;
-        
+
         if(!users.containsKey(username)){
             throw new UsernameInexistenteException("Username não existe.\n");
         } else{
             u = users.get(username);
-            
+
             if (!u.getPassword().equals(password)) {
                 throw new PasswordIncorretaException("A password está incorreta.\n");
             }
         }
-        
+
         this.lockSC.unlock();
         return u;
     }
 
     //Adicionar música
-    public Ficheiro upload(String path, String nome, int ano, Utilizador musico){
+    public Ficheiro upload(Ficheiro file){
         this.lockSC.lock();
 
         int id = this.musicas.size();
-        Ficheiro f = new Ficheiro(id,path,nome,musico,ano);
-        this.musicas.put(id,f);
-        
+        file.setId(id);
+        this.musicas.put(id,file);
+
         this.lockSC.unlock();
-        return f;        
+        return file;
     }
 
     //Descarregar música
 
     //Pesquisar música
-    public ArrayList<Ficheiro> search(int ano){
+    public ArrayList<Ficheiro> search(String label){
         this.lockSC.lock();
 
         ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
         for (Ficheiro f : this.musicas.values()) {
-            if(f.getAno() == ano)
+            if (f.getLabels().contains(label)) {
                 lista.add(f);
+            }
         }
-        
-        this.lockSC.unlock();
-        return lista;
-    }
 
-    public ArrayList<Ficheiro> search(String procura){
-        this.lockSC.lock();
-        
-        procura = procura.toLowerCase();
-
-        ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
-        for (Ficheiro f : this.musicas.values()) {
-            if(f.getNome().toLowerCase().contains(procura)
-                || f.getMusico().getName().toLowerCase().contains(procura)){
-                lista.add(f);
-                }
-        }
-        
         this.lockSC.unlock();
         return lista;
     }

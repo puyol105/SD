@@ -1,29 +1,33 @@
 package Servidor;
+import java.util.ArrayList;
 
-//import java.io.File;
-
-public class Ficheiro{ 
-    //private File file;
+public class Ficheiro{
     private int id;
     private String path;
     private String nome;
-    private Utilizador musico;
+    private String artista;
+    private ArrayList<String> labels;
     private int ano;
+    private int times_played;
 
-    public Ficheiro(Ficheiro f){
-        this.id=f.getId();
-        this.path=f.getPath();
-        this.nome=f.getNome();
-        this.musico=f.getMusico();
-        this.ano=f.getAno();
+    public Ficheiro(){
+        id = -1;
+        path = "";
+        nome = "";
+        artista = "";
+        labels = new ArrayList<String>();
+        ano = -1;
+        times_played = 0;
     }
 
-    public Ficheiro(int id, String path, String nome, Utilizador m, int a){
+    public Ficheiro(int id, String path, String nome, String artista, ArrayList<String> labels, int ano){
         this.id=id;
         this.path=path;
         this.nome=nome;
-        this.musico=m;
-        this.ano=a;
+        this.artista=artista;
+        this.labels=labels;
+        this.ano=ano;
+        this.times_played=0;
     }
 
     public int getId(){
@@ -38,12 +42,20 @@ public class Ficheiro{
         return this.nome;
     }
 
-    public Utilizador getMusico(){
-        return this.musico;
+    public String getArtista(){
+        return this.artista;
+    }
+
+    public ArrayList<String> getLabels(){
+        return this.labels;
     }
 
     public int getAno(){
         return this.ano;
+    }
+
+    public int getTimes_played(){
+        return this.times_played;
     }
 
     public void setId(int id){
@@ -57,28 +69,35 @@ public class Ficheiro{
     public void setNome(String nome){
         this.nome=nome;
     }
-    
-    public void setMusico(Utilizador m){
-        this.musico=m;
+
+    public void setArtista(String artista){
+        this.artista=artista;
     }
 
     public void setAno(int ano){
         this.ano=ano;
     }
 
+    public void setTimes_played(int times_played){
+        this.times_played = times_played;
+    }
+
+    public int incTimesPlayed(){
+        return ++this.times_played;
+    }
+
     public String toString(){
         StringBuilder string;
         string = new StringBuilder();
-        string.append("ID: ");
-        string.append(this.id+'\n');
-        string.append("Path: ");
-        string.append(this.path+'\n');
-        string.append("Título: ");
-        string.append(this.nome+'\n');
-        string.append("Músico: ");
-        string.append(this.musico.getName()+'\n');
-        string.append("Ano: ");
-        string.append(this.ano+'\n');
+        string.append("Ficheiro: { ");
+        string.append("id = \"" + this.id + "\"");
+        string.append(", path = \"" + this.path + "\"");
+        string.append(", nome = \"" + this.nome + "\"");
+        string.append(", artista = \"" + this.artista + "\"");
+        string.append(", ano = \"" + this.ano + "\"");
+        string.append(", labels = \"" + this.labels + "\"");
+        string.append(", times_played = \"" + this.times_played + "\"");
+        string.append(" }");
         return string.toString();
     }
 }

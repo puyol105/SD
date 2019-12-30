@@ -27,7 +27,7 @@ public class Worker implements Runnable {
 
         if (msg.toLowerCase().equals("help")){
             response = "List of commands:\n"
-                     + "create [musico/fan] [username] [password] [nome]\n"
+                     + "create [username] [password] [nome]\n"
                      + "login [username] [password]\n"
                      + "search [nome/artista/ano]\n"
                      + "download [id]\n"
@@ -37,15 +37,13 @@ public class Worker implements Runnable {
                      + "exit\n";
         }
 
-        if (parsedmsg[0].toLowerCase().equals("create") && parsedmsg.length == 5){
-            String musico_or_fan = parsedmsg[1];
-            String username = parsedmsg[2];
-            String password = parsedmsg[3];
-            String nome = parsedmsg[4];
-            boolean isMusico = parsedmsg[1].equals("musico");
+        if (parsedmsg[0].toLowerCase().equals("create") && parsedmsg.length == 4){
+            String username = parsedmsg[1];
+            String password = parsedmsg[2];
+            String nome = parsedmsg[3];
 
-            boolean r = sc.createUser(username, password, nome, isMusico);
-            response = r ? "User created. Type: " + musico_or_fan + ".\nUsername: \"" + username +"\". Password: \"" + password + "\".\nNome: \""+ nome+"\".\n" : "Failed!\n";
+            boolean r = sc.createUser(username, password, nome);
+            response = r ? "User created.\nUsername: \"" + username +"\". Password: \"" + password + "\". Nome: \""+ nome+"\".\n" : "Failed!\n";
         }
 
         if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 3){
@@ -58,30 +56,21 @@ public class Worker implements Runnable {
         }
 
         if (parsedmsg[0].toLowerCase().equals("search") && parsedmsg.length == 2){
-            
-            //Check se o filtro é numero ou nao
-            int ano = -1;
-            String filter = null;
-            try {
-                ano = Integer.parseInt(parsedmsg[1]);
-            } catch (NumberFormatException nfe) {
-                filter = parsedmsg[1];
-            }
+            ArrayList<Ficheiro> lista = sc.search(parsedmsg[1]);
+            response = "";
 
-            ArrayList<Ficheiro> lista = ano == -1 ? sc.search(filter) : sc.search(ano);
             for(Ficheiro f : lista){
-                response = f.getId() +": "
-                            + f.getMusico().getName() 
-                            + " - " + f.getNome() + "\n"; 
+                response = response + f.toString() + "\n";
             }
         }
 
         if (parsedmsg[0].toLowerCase().equals("download") && parsedmsg.length == 2){
-            
+
         }
 
         if (parsedmsg[0].toLowerCase().equals("upload") && parsedmsg.length == 2){
-            
+            String path = parsedmsg[1];
+            System.out.println("Path =\""+path+"\".");
         }
 
         if (parsedmsg[0].toLowerCase().equals("logout") && parsedmsg.length == 1){

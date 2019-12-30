@@ -5,16 +5,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Worker implements Runnable {
     private Socket clSock;
     private SoundCloud sc;
     private int id;
+    private Utilizador userLogado;
 
     public Worker(SoundCloud sc, Socket clSock) {
         this.sc = sc;
         this.clSock = clSock;
         this.id = -1;
+        this.userLogado = null;
     }
 
     public String checkMessage(String msg) {
@@ -23,14 +27,17 @@ public class Worker implements Runnable {
 
         if (msg.toLowerCase().equals("help")){
             response = "List of commands:\n"
-                    +  "create [musico/fan] [username] [password] [nome]\n"
-                    +  "login [username] [password]\n"
-                    +  "logout\n"
-                    +  "close\n"
-                    +  "exit\n";
+                     + "create [musico/fan] [username] [password] [nome]\n"
+                     + "login [username] [password]\n"
+                     + "search [Nome/Artista/Ano]\n"
+                     + "download [id]\n"
+                     + "upload [path]\n"
+                     + "logout\n"
+                     + "close\n"
+                     + "exit\n";
         }
 
-        if (parsedmsg[0].toLowerCase().equals("create") && parsedmsg.length > 1){
+        if (parsedmsg[0].toLowerCase().equals("create") && parsedmsg.length == 5){
             String musico_or_fan = parsedmsg[1];
             String username = parsedmsg[2];
             String password = parsedmsg[3];
@@ -43,18 +50,30 @@ public class Worker implements Runnable {
 
         if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 3){
             try {
-                Utilizador u = sc.login(parsedmsg[1], parsedmsg[2]);
+                this.userLogado = sc.login(parsedmsg[1], parsedmsg[2]);
                 response = "Logged in to: " + u.toString() + ".\n";
             } catch (UsernameInexistenteException | PasswordIncorretaException e) {
                 response = e.toString();
             }
         }
 
-        if (parsedmsg[0].toLowerCase().equals("logout") && parsedmsg.length == 2){
-            /*
-            id = -1;
-            response = "Successfully logged out. Please log in into another account or create new account.\n";
-            */
+        if (parsedmsg[0].toLowerCase().equals("search") && parsedmsg.length == 2){
+            ArrayList<Ficheiro> lista = sc.search(parsedmsg[1]);
+            for(Ficheiro resultado : lista){
+                response.append(resultado.getId() +": "+ resultado.getMusico().getName() +" - "+ resultado.getNome() + "\n"); 
+            }
+        }
+
+        if (parsedmsg[0].toLowerCase().equals("download") && parsedmsg.length == 2){
+            
+        }
+
+        if (parsedmsg[0].toLowerCase().equals("upload") && parsedmsg.length == 2){
+            
+        }
+
+        if (parsedmsg[0].toLowerCase().equals("logout") && parsedmsg.length == 1){
+            this.userLogado = null;
         }
 
         if (parsedmsg[0].toLowerCase().equals("close") && parsedmsg.length == 2){

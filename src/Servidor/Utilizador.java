@@ -74,11 +74,16 @@ public class Utilizador{
     }
 
     public String toString(){
-        return "Utilizador: { username = \"" + username + "\""
-                         + ", password = \"" + password + "\""
-                         + ", name = \"" + name + "\""
-                         + ", isMusico = \"" + isMusico + "\""
-                         + "}";
+        StringBuilder string;
+        string = new StringBuilder();
+        if(isMusico) string.append("--- Músico ---");
+        if(!isMusico) string.append("--- Fã ---");
+        string.append("Username: ");
+        string.append(this.username+'\n');
+        string.append("Nome: ");
+        string.append(this.name+'\n');
+        return string.toString();
     }
+
 }
 

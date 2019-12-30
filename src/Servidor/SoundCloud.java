@@ -1,5 +1,7 @@
 package Servidor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -7,13 +9,11 @@ public class SoundCloud{
 
     private HashMap<String, Utilizador> users;
     private HashMap<Integer, Ficheiro> musicas;
-    //private HashMap<String, Pedido> pedidos;
     private ReentrantLock lockSC;
 
     public SoundCloud(){
         this.users = new HashMap<>();
         this.musicas = new HashMap<>();
-        //this.pedidos = new HashMap<>();
         this.lockSC = new ReentrantLock(); 
     }
 
@@ -67,5 +67,26 @@ public class SoundCloud{
     //Descarregar música
 
     //Pesquisar música
+    public ArrayList<Ficheiro> search(int ano){
+        this.lockSC.lock();
+        ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
+        for (Map.Entry musica : this.musicas.entrySet()) {
+            if(musica.getAno().equals(ano)) lista.add(musica);
+        }
+        this.lockSC.unlock();
+        return lista;
+    }
+
+    public ArrayList<Ficheiro> search(String procura){
+        this.lockSC.lock();
+        ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
+        for (Map.Entry musica : this.musicas.entrySet()) {
+            if(musica.getNome().toLowerCase().contains(procura.toLowerCase()) || 
+                musica.getMusico().getName().toLowerCase().contains(procura.toLowerCase())) 
+                lista.add(musica);
+        }
+        this.lockSC.unlock();
+        return lista;
+    }
 }
 

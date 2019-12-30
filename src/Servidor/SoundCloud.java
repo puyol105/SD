@@ -53,12 +53,12 @@ public class SoundCloud{
     }
 
     //Adicionar música
-    public Ficheiro upload(String nome, int ano, Utilizador musico){
+    public Ficheiro upload(String path, String nome, int ano, Utilizador musico){
         this.lockSC.lock();
 
-        int next = this.musicas.size();
-        Ficheiro f = new Ficheiro(next,nome,musico,ano);
-        this.musicas.put(next,f);
+        int id = this.musicas.size();
+        Ficheiro f = new Ficheiro(id,path,nome,musico,ano);
+        this.musicas.put(id,f);
         
         this.lockSC.unlock();
         return f;        
@@ -69,22 +69,30 @@ public class SoundCloud{
     //Pesquisar música
     public ArrayList<Ficheiro> search(int ano){
         this.lockSC.lock();
+
         ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
-        for (Map.Entry musica : this.musicas.entrySet()) {
-            if(musica.getAno().equals(ano)) lista.add(musica);
+        for (Ficheiro f : this.musicas.values()) {
+            if(f.getAno() == ano)
+                lista.add(f);
         }
+        
         this.lockSC.unlock();
         return lista;
     }
 
     public ArrayList<Ficheiro> search(String procura){
         this.lockSC.lock();
+        
+        procura = procura.toLowerCase();
+
         ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
-        for (Map.Entry musica : this.musicas.entrySet()) {
-            if(musica.getNome().toLowerCase().contains(procura.toLowerCase()) || 
-                musica.getMusico().getName().toLowerCase().contains(procura.toLowerCase())) 
-                lista.add(musica);
+        for (Ficheiro f : this.musicas.values()) {
+            if(f.getNome().toLowerCase().contains(procura)
+                || f.getMusico().getName().toLowerCase().contains(procura)){
+                lista.add(f);
+                }
         }
+        
         this.lockSC.unlock();
         return lista;
     }

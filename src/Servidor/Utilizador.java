@@ -76,12 +76,12 @@ public class Utilizador{
     public String toString(){
         StringBuilder string;
         string = new StringBuilder();
-        if(isMusico) string.append("--- Músico ---");
-        if(!isMusico) string.append("--- Fã ---");
-        string.append("Username: ");
-        string.append(this.username+'\n');
-        string.append("Nome: ");
-        string.append(this.name+'\n');
+        string.append("Utilizador: { ");
+        string.append("username = \"" + this.username + "\"");
+        string.append(", password = \"" + this.password + "\"");
+        string.append(", name = \"" + this.name + "\"");
+        string.append(", isMusico = \"" + this.isMusico + "\"");
+        string.append(" }");
         return string.toString();
     }
 

@@ -12,13 +12,13 @@ public class Worker implements Runnable {
     private Socket clSock;
     private SoundCloud sc;
     private int id;
-    private Utilizador userLogado;
+    private Utilizador loggedUser;
 
     public Worker(SoundCloud sc, Socket clSock) {
         this.sc = sc;
         this.clSock = clSock;
         this.id = -1;
-        this.userLogado = null;
+        this.loggedUser = null;
     }
 
     public String checkMessage(String msg) {
@@ -29,7 +29,7 @@ public class Worker implements Runnable {
             response = "List of commands:\n"
                      + "create [musico/fan] [username] [password] [nome]\n"
                      + "login [username] [password]\n"
-                     + "search [Nome/Artista/Ano]\n"
+                     + "search [nome/artista/ano]\n"
                      + "download [id]\n"
                      + "upload [path]\n"
                      + "logout\n"
@@ -50,17 +50,29 @@ public class Worker implements Runnable {
 
         if (parsedmsg[0].toLowerCase().equals("login") && parsedmsg.length == 3){
             try {
-                this.userLogado = sc.login(parsedmsg[1], parsedmsg[2]);
-                response = "Logged in to: " + u.toString() + ".\n";
+                loggedUser = sc.login(parsedmsg[1], parsedmsg[2]);
+                response = "Logged in to: " + loggedUser.toString() + ".\n";
             } catch (UsernameInexistenteException | PasswordIncorretaException e) {
                 response = e.toString();
             }
         }
 
         if (parsedmsg[0].toLowerCase().equals("search") && parsedmsg.length == 2){
-            ArrayList<Ficheiro> lista = sc.search(parsedmsg[1]);
-            for(Ficheiro resultado : lista){
-                response.append(resultado.getId() +": "+ resultado.getMusico().getName() +" - "+ resultado.getNome() + "\n"); 
+            
+            //Check se o filtro é numero ou nao
+            int ano = -1;
+            String filter = null;
+            try {
+                ano = Integer.parseInt(parsedmsg[1]);
+            } catch (NumberFormatException nfe) {
+                filter = parsedmsg[1];
+            }
+
+            ArrayList<Ficheiro> lista = ano == -1 ? sc.search(filter) : sc.search(ano);
+            for(Ficheiro f : lista){
+                response = f.getId() +": "
+                            + f.getMusico().getName() 
+                            + " - " + f.getNome() + "\n"; 
             }
         }
 
@@ -73,7 +85,7 @@ public class Worker implements Runnable {
         }
 
         if (parsedmsg[0].toLowerCase().equals("logout") && parsedmsg.length == 1){
-            this.userLogado = null;
+            this.loggedUser = null;
         }
 
         if (parsedmsg[0].toLowerCase().equals("close") && parsedmsg.length == 2){

@@ -79,9 +79,22 @@ public class ClienteInput implements Runnable{
                         input = cl_input.readLine();
                         write_socket.println(input);
 
+                        System.out.print("Path to file: ");
+                        input = cl_input.readLine();
+                        write_socket.println(input);
+
                         System.out.print("Artist/Band: ");
                         input = cl_input.readLine();
                         write_socket.println(input);
+
+                        System.out.print("Year of release: ");
+                        input = cl_input.readLine();
+                        write_socket.println(input);
+
+                        System.out.print("Labels (separated by spaces): ");
+                        input = cl_input.readLine();
+                        write_socket.println(input);
+
                         input="1";
                     }
                     else if(input.equals("2")){
@@ -89,19 +102,16 @@ public class ClienteInput implements Runnable{
                     }
                     else if(input.equals("3")){
                         write_socket.println("search");
-                        System.out.print("Title: ");
-                        input = cl_input.readLine();
-                        write_socket.println(input);
-
-                        System.out.print("Artist/Band: ");
+                        System.out.print("Labels (separated by spaces): ");
                         input = cl_input.readLine();
                         write_socket.println(input);
                         input="1";
                     }
                     else if(input.equals("0")){
+                        write_socket.println("logout");
                         break;
                     }
-                    if(input.equals("1") || input.equals("2") || input.equals("0")){
+                    if(input.equals("2") || input.equals("0")){
                         menu.show();
                     }
                     else System.out.println("Invalid option.");

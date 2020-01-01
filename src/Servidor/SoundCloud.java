@@ -102,11 +102,13 @@ public class SoundCloud{
     //Pesquisar música
     public ArrayList<Ficheiro> search(String label){
         this.lockSC.lock();
+        String[] separated_labels = label.split(" "); 
 
         ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
         for (Ficheiro f : this.musicas.values()) {
-            if (f.getLabels().contains(label)) {
-                lista.add(f);
+            for (String l : separated_labels) {
+                if (f.getLabels().contains(l)) 
+                    lista.add(f);
             }
         }
 

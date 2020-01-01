@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
 
 public class Cliente{
+    public final static int SOCKET_PORT = 12345;
+    
     public static void main(String[] args){
         String input = null;
         Utilizador utilizador = null;
@@ -14,7 +16,7 @@ public class Cliente{
         Condition cond = lock.newCondition();
 
         try{
-            clSock = new Socket("localhost", 12345);
+            clSock = new Socket("localhost", SOCKET_PORT);
 
             BufferedReader read_socket = new BufferedReader(new InputStreamReader(clSock.getInputStream()));
 
@@ -34,7 +36,7 @@ public class Cliente{
 
             read_socket.close();
 
-            System.out.println("Até uma próxima!\n");
+            System.out.println("Exited.\n");
             clSock.close();
 
         }

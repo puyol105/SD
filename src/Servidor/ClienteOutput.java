@@ -6,7 +6,7 @@ import java.net.*;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
 
-public class ClienteOutput extends Thread{
+public class ClienteOutput implements Runnable{
     private BufferedReader read_socket;
     private Menu menu;
     private ReentrantLock lock;

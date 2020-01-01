@@ -8,7 +8,7 @@ public class Ficheiro{
     private String artista;
     private ArrayList<String> labels;
     private int ano;
-    private int times_played;
+    private int times_downloaded;
 
     public Ficheiro(){
         id = -1;
@@ -17,7 +17,7 @@ public class Ficheiro{
         artista = "";
         labels = new ArrayList<String>();
         ano = -1;
-        times_played = 0;
+        times_downloaded = 0;
     }
 
     public Ficheiro(int id, String path, String nome, String artista, ArrayList<String> labels, int ano){
@@ -27,7 +27,7 @@ public class Ficheiro{
         this.artista=artista;
         this.labels=labels;
         this.ano=ano;
-        this.times_played=0;
+        this.times_downloaded=0;
     }
 
     public int getId(){
@@ -54,8 +54,8 @@ public class Ficheiro{
         return this.ano;
     }
 
-    public int getTimes_played(){
-        return this.times_played;
+    public int getTimes_downloaded(){
+        return this.times_downloaded;
     }
 
     public void setId(int id){
@@ -78,12 +78,12 @@ public class Ficheiro{
         this.ano=ano;
     }
 
-    public void setTimes_played(int times_played){
-        this.times_played = times_played;
+    public void setTimes_downloaded(int times_downloaded){
+        this.times_downloaded = times_downloaded;
     }
 
     public int incTimesPlayed(){
-        return ++this.times_played;
+        return ++this.times_downloaded;
     }
 
     public String toString(){
@@ -96,8 +96,20 @@ public class Ficheiro{
         string.append(", artista = \"" + this.artista + "\"");
         string.append(", ano = \"" + this.ano + "\"");
         string.append(", labels = \"" + this.labels + "\"");
-        string.append(", times_played = \"" + this.times_played + "\"");
+        string.append(", times_downloaded = \"" + this.times_downloaded + "\"");
         string.append(" }");
+        return string.toString();
+    }
+    
+    public String toFancyString(){
+        StringBuilder string;
+        string = new StringBuilder();
+        string.append("ID = \"" + this.id + "\"");
+        string.append(", Title = \"" + this.nome + "\"");
+        string.append(", Artist/Band = \"" + this.artista + "\"");
+        string.append(", Year of Release = \"" + this.ano + "\"");
+        string.append(", Labels = \"" + this.labels + "\"");
+        string.append(", Times Downloaded = \"" + this.times_downloaded + "\".");
         return string.toString();
     }
 }

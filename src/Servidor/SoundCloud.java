@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,24 +78,40 @@ public class SoundCloud{
     }
 
     //Adicionar música
-    public Ficheiro upload(Ficheiro file){
+    public Ficheiro upload(Ficheiro file, String bytes){
         this.lockSC.lock();
 
         int id = this.musicas.size();
         file.setId(id);
+        byte[] b = bytes.getBytes();
 
-        ProcessBuilder pbb = new ProcessBuilder("cp", "-a", file.getPath(), "../../MusicFiles");
+        /*ProcessBuilder pbb = new ProcessBuilder("cp", "-a", file.getPath(), "../../MusicFiles");
         try {
             pbb.start();
         } catch (IOException ex) {
             ex.printStackTrace();
-        }
+        }*/
+        writeByte(b);
 
         this.musicas.put(id,file);
 
         this.lockSC.unlock();
         return file;
     }
+
+    static void writeByte(byte[] bytes) 
+    { 
+        try {  
+            File file = new File("");
+            // Initialize a pointer in file using OutputStream 
+            OutputStream os = new FileOutputStream(file); 
+            os.write(bytes); 
+            os.close(); 
+        } 
+        catch (Exception e) { 
+            System.out.println("Exception: " + e); 
+        } 
+    } 
 
     //Descarregar música
 
@@ -114,6 +130,10 @@ public class SoundCloud{
 
         this.lockSC.unlock();
         return lista;
+    }
+
+    public int musicasSize(){
+        return this.musicas.size();
     }
 }
 

@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
+import java.nio.file.*;
 
 public class ClienteInput implements Runnable{
     private BufferedReader cl_input;
@@ -80,7 +81,9 @@ public class ClienteInput implements Runnable{
                         write_socket.println(input);
 
                         System.out.print("Path to file: ");
-                        input = cl_input.readLine();
+                        String path = cl_input.readLine();
+                        byte[] array = Files.readAllBytes(Paths.get(path));
+                        input = new String(array);
                         write_socket.println(input);
 
                         System.out.print("Artist/Band: ");
@@ -95,7 +98,7 @@ public class ClienteInput implements Runnable{
                         input = cl_input.readLine();
                         write_socket.println(input);
 
-                        input="1";
+                        input="2";
                     }
                     else if(input.equals("2")){
                         write_socket.println("download");
@@ -105,7 +108,7 @@ public class ClienteInput implements Runnable{
                         System.out.print("Labels (separated by spaces): ");
                         input = cl_input.readLine();
                         write_socket.println(input);
-                        input="1";
+                        input="2";
                     }
                     else if(input.equals("0")){
                         write_socket.println("logout");

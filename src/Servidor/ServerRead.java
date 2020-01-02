@@ -49,15 +49,15 @@ public class ServerRead implements Runnable{
                 }
                 else if(input.equals("upload")){
                     String title = read_socket.readLine();
-                    String path = read_socket.readLine();
+                    String bytes = read_socket.readLine();
                     String artist = read_socket.readLine();
                     String ano = read_socket.readLine();
                     String labels = read_socket.readLine();
 
                     ArrayList<String> separated_labels = new ArrayList<>();
                     Collections.addAll(separated_labels, labels.split(" "));
-                    Ficheiro f = new Ficheiro(-1, path, title, artist, separated_labels, Integer.parseInt(ano));
-                    f = sc.upload(f);
+                    Ficheiro f = new Ficheiro(sc.musicasSize(), title, artist, separated_labels, Integer.parseInt(ano));
+                    f = sc.upload(f,bytes);
                     
                     sm.setMessage("Uploaded Music file: "+f.toString(), null);
                 }

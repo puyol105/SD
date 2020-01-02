@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 public class Ficheiro{
     private int id;
-    private String path;
     private String nome;
     private String artista;
     private ArrayList<String> labels;
@@ -12,7 +11,6 @@ public class Ficheiro{
 
     public Ficheiro(){
         id = -1;
-        path = "";
         nome = "";
         artista = "";
         labels = new ArrayList<String>();
@@ -20,9 +18,8 @@ public class Ficheiro{
         times_downloaded = 0;
     }
 
-    public Ficheiro(int id, String path, String nome, String artista, ArrayList<String> labels, int ano){
+    public Ficheiro(int id, String nome, String artista, ArrayList<String> labels, int ano){
         this.id=id;
-        this.path=path;
         this.nome=nome;
         this.artista=artista;
         this.labels=labels;
@@ -32,10 +29,6 @@ public class Ficheiro{
 
     public int getId(){
         return this.id;
-    }
-
-    public String getPath(){
-        return this.path;
     }
 
     public String getNome(){
@@ -60,10 +53,6 @@ public class Ficheiro{
 
     public void setId(int id){
         this.id=id;
-    }
-
-    public void setPath(String path){
-        this.path = path;
     }
 
     public void setNome(String nome){
@@ -91,7 +80,6 @@ public class Ficheiro{
         string = new StringBuilder();
         string.append("Ficheiro: { ");
         string.append("id = \"" + this.id + "\"");
-        string.append(", path = \"" + this.path + "\"");
         string.append(", nome = \"" + this.nome + "\"");
         string.append(", artista = \"" + this.artista + "\"");
         string.append(", ano = \"" + this.ano + "\"");

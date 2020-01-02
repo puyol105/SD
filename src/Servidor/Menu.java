@@ -17,7 +17,7 @@ public class Menu {
                                        "| 0 - Exit                        |\n"+
                                        "#---------------------------------#\n");
                     break;
-            case 1: System.out.println("#------------COMPRADOR------------#\n"+
+            case 1: System.out.println("#-----------UTILIZADOR------------#\n"+
                                        "| 1 - Upload Music File           |\n"+
                                        "| 2 - Download Music File         |\n"+
                                        "| 3 - Search Music Files          |\n"+

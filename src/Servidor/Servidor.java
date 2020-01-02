@@ -2,7 +2,6 @@ package Servidor;
 
 import java.io.*;
 import java.net.*;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
 
 public class Servidor {
@@ -14,8 +13,10 @@ public class Servidor {
         Socket clSock = null;
         ReentrantLock lock = new ReentrantLock();
 
+        System.out.println("Ola sou um servidor muito lindo");
         try{
             while((clSock = serverSocket.accept()) != null){
+                System.out.println("Ola sou uma pessoa");
                 BufferedReader read_socket = new BufferedReader(new InputStreamReader(clSock.getInputStream()));
                 PrintWriter write_socket = new PrintWriter(clSock.getOutputStream(),true);
 

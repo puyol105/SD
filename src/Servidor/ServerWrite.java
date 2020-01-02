@@ -1,8 +1,6 @@
 package Servidor;
 
 import java.io.*;
-import java.net.*;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
 
 public class ServerWrite implements Runnable{

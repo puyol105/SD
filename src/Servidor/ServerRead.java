@@ -4,6 +4,7 @@ import java.lang.Thread;
 import java.io.*;
 import java.net.*;
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.ArrayList;
 
 public class ServerRead implements Runnable{
@@ -84,9 +85,9 @@ public class ServerRead implements Runnable{
                     Integer id = Integer.parseInt(id_s);
 
                     try{
-                        byte[] bytes = sc.download(id);
+                        String bytes = sc.download(id);
 
-                        sm.setMessage("Downloaded.____"+new String(bytes, "UTF-8"), null);
+                        sm.setMessage("Downloaded.\n"+bytes, null);
                     }
                     catch(Exception e){
                         sm.setMessage(e.getMessage(),null);

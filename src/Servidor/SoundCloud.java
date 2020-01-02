@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 import java.util.logging.Level;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public class SoundCloud{
@@ -106,11 +108,11 @@ public class SoundCloud{
 
 
     //Descarregar música
-    public byte[] download(int id){
+    public String download(int id){
         this.lockSC.lock();
 
         byte[] bytes = null;
-
+        String r = null;
         try {
             Ficheiro f = this.musicas.get(id);
             f.incTimesPlayed();
@@ -118,10 +120,12 @@ public class SoundCloud{
             
             String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
             File file = new File(path);
-            
+           
+            bytes = Files.readAllBytes(Paths.get(path));
+            r = new String(bytes);
             FileInputStream fis = new FileInputStream(file);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buf = new byte[10000];
+            byte[] buf = new byte[50000];
             int size = 0;
             for (int readNum; (readNum = fis.read(buf)) != -1;) {
                 bos.write(buf, 0, readNum);
@@ -135,7 +139,10 @@ public class SoundCloud{
         }
 
         this.lockSC.lock();
-        return bytes;
+        String rsplit = r;
+        String[] arr = rsplit.split("\n");
+        System.out.println("sizeresult = "+arr.length);
+        return r;
     }
 
     //Pesquisar música

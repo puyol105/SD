@@ -1,11 +1,6 @@
 package Servidor;
 
-import java.lang.Thread;
-import java.io.*;
-import java.net.*;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
-import java.util.List;
 import java.util.ArrayList;
 
 public class ServerMessage {

@@ -100,6 +100,9 @@ public class ClienteInput implements Runnable{
                     }
                     else if(input.equals("2")){
                         write_socket.println("download");
+                        System.out.print("ID: ");
+                        input = cl_input.readLine();
+                        write_socket.println(input);
                     }
                     else if(input.equals("3")){
                         write_socket.println("search");

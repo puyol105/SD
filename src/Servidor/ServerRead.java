@@ -59,14 +59,12 @@ public class ServerRead implements Runnable{
                     File file = new File(path);
 
                     FileInputStream fis = new FileInputStream(file);
-                    //System.out.println(file.exists() + "!!");
-                    //InputStream in = resource.openStream();
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     byte[] buf = new byte[10000];
                     int size = 0;
                     try {
                         for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                            bos.write(buf, 0, readNum); //no doubt here is 0
+                            bos.write(buf, 0, readNum);
                             size += readNum;
                         }
                         System.out.println("Size total: "+size);
@@ -80,6 +78,19 @@ public class ServerRead implements Runnable{
                     f = sc.upload(f,bytes);
 
                     sm.setMessage("Uploaded Music file: "+f.toString(), null);
+                }
+                else if(input.equals("download")){
+                    String id_s = read_socket.readLine();
+                    Integer id = Integer.parseInt(id_s);
+
+                    try{
+                        byte[] bytes = sc.download(id);
+
+                        sm.setMessage("Downloaded.____"+new String(bytes, "UTF-8"), null);
+                    }
+                    catch(Exception e){
+                        sm.setMessage(e.getMessage(),null);
+                    }
                 }
                 else if(input.equals("search")){
                     String labels = read_socket.readLine();

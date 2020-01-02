@@ -85,7 +85,8 @@ public class SoundCloud{
         f.setId(id);
 
         try {
-            File musica = new File("../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3");
+            String new_path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
+            File musica = new File(new_path);
             FileOutputStream fos = new FileOutputStream(musica);
             fos.write(bytes);
             fos.flush();
@@ -94,6 +95,7 @@ public class SoundCloud{
         catch (Exception e) {
             System.out.println("Exception: " + e);
         }
+
 
         this.musicas.put(id, f);
 
@@ -104,6 +106,37 @@ public class SoundCloud{
 
 
     //Descarregar música
+    public byte[] download(int id){
+        this.lockSC.lock();
+
+        byte[] bytes = null;
+
+        try {
+            Ficheiro f = this.musicas.get(id);
+            f.incTimesPlayed();
+            this.musicas.put(id, f);
+            
+            String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
+            File file = new File(path);
+            
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[10000];
+            int size = 0;
+            for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                bos.write(buf, 0, readNum);
+                size += readNum;
+            }
+            System.out.println("Size total: "+size);
+            bytes = bos.toByteArray();
+        }
+        catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+
+        this.lockSC.lock();
+        return bytes;
+    }
 
     //Pesquisar música
     public ArrayList<Ficheiro> search(String label){

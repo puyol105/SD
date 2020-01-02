@@ -78,40 +78,30 @@ public class SoundCloud{
     }
 
     //Adicionar música
-    public Ficheiro upload(Ficheiro file, String bytes){
+    public Ficheiro upload(Ficheiro f, String bytes){
         this.lockSC.lock();
 
-        int id = this.musicas.size();
-        file.setId(id);
         byte[] b = bytes.getBytes();
-
-        /*ProcessBuilder pbb = new ProcessBuilder("cp", "-a", file.getPath(), "../../MusicFiles");
-        try {
-            pbb.start();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }*/
-        writeByte(b);
-
-        this.musicas.put(id,file);
-
-        this.lockSC.unlock();
-        return file;
-    }
-
-    static void writeByte(byte[] bytes) 
-    { 
+        int id = this.musicas.size();
+        f.setId(id);
         try {  
             File file = new File("");
             // Initialize a pointer in file using OutputStream 
             OutputStream os = new FileOutputStream(file); 
-            os.write(bytes); 
+            os.write(b); 
             os.close(); 
         } 
         catch (Exception e) { 
             System.out.println("Exception: " + e); 
         } 
-    } 
+
+        this.musicas.put(id,f);
+
+
+        this.lockSC.unlock();
+        return f;
+    }
+
 
     //Descarregar música
 

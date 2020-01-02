@@ -49,26 +49,46 @@ public class ServerRead implements Runnable{
                 }
                 else if(input.equals("upload")){
                     String title = read_socket.readLine();
-                    String bytes = read_socket.readLine();
+                    String path = read_socket.readLine();
                     String artist = read_socket.readLine();
                     String ano = read_socket.readLine();
                     String labels = read_socket.readLine();
 
                     ArrayList<String> separated_labels = new ArrayList<>();
                     Collections.addAll(separated_labels, labels.split(" "));
-                    Ficheiro f = new Ficheiro(sc.musicasSize(), title, artist, separated_labels, Integer.parseInt(ano));
+                    File file = new File(path);
+
+                    FileInputStream fis = new FileInputStream(file);
+                    //System.out.println(file.exists() + "!!");
+                    //InputStream in = resource.openStream();
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    byte[] buf = new byte[10000];
+                    int size = 0;
+                    try {
+                        for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                            bos.write(buf, 0, readNum); //no doubt here is 0
+                            size += readNum;
+                        }
+                        System.out.println("Size total: "+size);
+                    } catch (IOException ex) {
+                        sm.setMessage(ex.getMessage(), null);
+                    }
+
+                    byte[] bytes = bos.toByteArray();
+
+                    Ficheiro f = new Ficheiro(-1, title, artist, separated_labels, Integer.parseInt(ano));
                     f = sc.upload(f,bytes);
-                    
+
                     sm.setMessage("Uploaded Music file: "+f.toString(), null);
                 }
                 else if(input.equals("search")){
                     String labels = read_socket.readLine();
-                    
+
                     try{
                         ArrayList<Ficheiro> filtered_files = new ArrayList<>();
                         filtered_files = sc.search(labels);
                         ArrayList<String> result = new ArrayList<>();
-                        
+
                         for (Ficheiro f : filtered_files) {
                             result.add(f.toFancyString());
                         }

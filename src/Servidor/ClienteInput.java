@@ -81,9 +81,7 @@ public class ClienteInput implements Runnable{
                         write_socket.println(input);
 
                         System.out.print("Path to file: ");
-                        String path = cl_input.readLine();
-                        byte[] array = Files.readAllBytes(Paths.get(path));
-                        input = new String(array);
+                        input = cl_input.readLine();
                         write_socket.println(input);
 
                         System.out.print("Artist/Band: ");

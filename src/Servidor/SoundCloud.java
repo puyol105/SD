@@ -78,24 +78,24 @@ public class SoundCloud{
     }
 
     //Adicionar música
-    public Ficheiro upload(Ficheiro f, String bytes){
+    public Ficheiro upload(Ficheiro f, byte[] bytes){
         this.lockSC.lock();
 
-        byte[] b = bytes.getBytes();
         int id = this.musicas.size();
         f.setId(id);
-        try {  
-            File file = new File("");
-            // Initialize a pointer in file using OutputStream 
-            OutputStream os = new FileOutputStream(file); 
-            os.write(b); 
-            os.close(); 
-        } 
-        catch (Exception e) { 
-            System.out.println("Exception: " + e); 
-        } 
 
-        this.musicas.put(id,f);
+        try {
+            File musica = new File("../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3");
+            FileOutputStream fos = new FileOutputStream(musica);
+            fos.write(bytes);
+            fos.flush();
+            fos.close();
+        }
+        catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+
+        this.musicas.put(id, f);
 
 
         this.lockSC.unlock();
@@ -108,22 +108,18 @@ public class SoundCloud{
     //Pesquisar música
     public ArrayList<Ficheiro> search(String label){
         this.lockSC.lock();
-        String[] separated_labels = label.split(" "); 
+        String[] separated_labels = label.split(" ");
 
         ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
         for (Ficheiro f : this.musicas.values()) {
             for (String l : separated_labels) {
-                if (f.getLabels().contains(l)) 
+                if (f.getLabels().contains(l))
                     lista.add(f);
             }
         }
 
         this.lockSC.unlock();
         return lista;
-    }
-
-    public int musicasSize(){
-        return this.musicas.size();
     }
 }
 

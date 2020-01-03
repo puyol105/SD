@@ -59,10 +59,6 @@ public class ClienteInput implements Runnable{
                         System.out.print("Password: ");
                         input = cl_input.readLine();
                         write_socket.println(input);
-
-                        System.out.print("Name: ");
-                        input = cl_input.readLine();
-                        write_socket.println(input);
                         input="2";
                     }
                     else if(input.equals("0")){

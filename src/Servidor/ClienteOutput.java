@@ -8,12 +8,14 @@ import java.nio.charset.StandardCharsets;
 
 public class ClienteOutput implements Runnable{
     private BufferedReader read_socket;
+    private BufferedInputStream file_socket;
     private Menu menu;
     private ReentrantLock lock;
     private Condition cond;
 
-    public ClienteOutput(BufferedReader read_socket, Menu menu, ReentrantLock l, Condition c){
-        this.read_socket = read_socket;
+    public ClienteOutput(Socket clSock, Menu menu, ReentrantLock l, Condition c){
+        this.file_socket = new BufferedInputStream(clSock.getInputStream());
+        this.read_socket = new BufferedReader(new InputStreamReader(clSock.getInputStream()));
         this.menu = menu;
         this.lock=l;
         this.cond=c;
@@ -36,7 +38,21 @@ public class ClienteOutput implements Runnable{
                     cond.signal();
                     this.lock.unlock();
                 }
-                else if(linha.contains("Downloaded.")){
+                else if(linha.contains("DOWNLOAD-FILE")){
+
+
+
+                    byte[] bytes = new byte[]
+
+                    String new_path = "./DownloadedMusic/1.mp3";
+                    File musica = new File(new_path);
+                    FileOutputStream fos = new FileOutputStream(musica);
+                    fos.write(bytes);
+                    fos.flush();
+                    fos.close();
+
+
+                    /*
                     System.out.println("yasidbasid");
                     String wtf = "";
                     String aux;
@@ -51,7 +67,7 @@ public class ClienteOutput implements Runnable{
                 
                     byte[] bytes = wtf.getBytes(StandardCharsets.UTF_8);
                     Files.write(Paths.get("./DownloadedMusic/"+"2.mp3"), bytes);
-                    
+                    */
                     /*
                     String new_path = "./DownloadedMusic/"+"1.mp3";
                     File musica = new File(new_path);

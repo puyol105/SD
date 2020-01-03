@@ -28,13 +28,13 @@ public class SoundCloud{
     }
 
 
-    public boolean createUser(String username, String pass, String nome, ServerMessage sm){
+    public boolean createUser(String username, String pass, ServerMessage sm){
         this.lockUsers.lock();
 
         //Verificar se username já esta ocupado
         boolean f = users.containsKey(username);
         if (!f){
-            Utilizador u = new Utilizador(username, pass, nome);
+            Utilizador u = new Utilizador(username, pass);
             users.put(username, u);
 
             this.lockMsgs.lock();
@@ -108,7 +108,8 @@ public class SoundCloud{
 
 
     //Descarregar música
-    public String download(int id){
+    //Ir buscar a musica ao file system para memoria
+    public byte[] download(int id){
         this.lockSC.lock();
 
         byte[] bytes = null;
@@ -120,7 +121,13 @@ public class SoundCloud{
             
             String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
             File file = new File(path);
-           
+            bytes = new byte[(int) file.length()];
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            bis.read(bytes,0,bytes.length);
+
+
+           /* 
             bytes = Files.readAllBytes(Paths.get(path));
             r = new String(bytes);
             FileInputStream fis = new FileInputStream(file);
@@ -133,16 +140,19 @@ public class SoundCloud{
             }
             System.out.println("Size total: "+size);
             bytes = bos.toByteArray();
+            */
         }
         catch (Exception e) {
             System.out.println("Exception: " + e);
         }
 
         this.lockSC.lock();
+        /*
         String rsplit = r;
         String[] arr = rsplit.split("\n");
         System.out.println("sizeresult = "+arr.length);
-        return r;
+*/
+        return bytes;
     }
 
     //Pesquisar música

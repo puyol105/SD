@@ -13,7 +13,7 @@ public class ServerRead implements Runnable{
     private Utilizador user;
     private ServerMessage sm;
 
-    public ServerRead(BufferedReader r, SoundCloud s, ServerMessage m){
+    public ServerRead(InputStream r, SoundCloud s, ServerMessage m){
         this.read_socket = r;
         this.sc = s;
         this.sm = m;
@@ -39,9 +39,8 @@ public class ServerRead implements Runnable{
                 else if(input.equals("create_user")){
                     String username = read_socket.readLine();
                     String pass = read_socket.readLine();
-                    String name = read_socket.readLine();
                     try{
-                        sc.createUser(username,pass,name,sm);
+                        sc.createUser(username,pass,sm);
                         sm.setMessage("Created new user.",null);
                     }
                     catch(Exception e){
@@ -85,9 +84,9 @@ public class ServerRead implements Runnable{
                     Integer id = Integer.parseInt(id_s);
 
                     try{
-                        String bytes = sc.download(id);
+                        byte[] bytes = sc.download(id);
 
-                        sm.setMessage("Downloaded.\n"+bytes, null);
+                        sm.setDownload(bytes);
                     }
                     catch(Exception e){
                         sm.setMessage(e.getMessage(),null);

@@ -18,13 +18,11 @@ public class Cliente{
         try{
             clSock = new Socket("localhost", SOCKET_PORT);
 
-            BufferedReader read_socket = new BufferedReader(new InputStreamReader(clSock.getInputStream()));
-
             Menu menu = new Menu();
 
             ClienteInput client_input = new ClienteInput(clSock,menu,lock, cond);
 
-            ClienteOutput client_output = new ClienteOutput(read_socket,menu,lock, cond);
+            ClienteOutput client_output = new ClienteOutput(clSock,menu,lock, cond);
             Thread t_input = new Thread(client_input);
             Thread t_output = new Thread(client_output);
 

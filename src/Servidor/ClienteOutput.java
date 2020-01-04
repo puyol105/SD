@@ -1,21 +1,23 @@
 package Servidor;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.concurrent.locks.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 
-public class ClienteOutput implements Runnable{
+public class ClienteOutput implements Runnable {
+    private Socket socket;
     private BufferedReader read_socket;
-    private BufferedInputStream file_socket;
     private Menu menu;
     private ReentrantLock lock;
     private Condition cond;
 
-    public ClienteOutput(Socket clSock, Menu menu, ReentrantLock l, Condition c){
-        this.file_socket = new BufferedInputStream(clSock.getInputStream());
-        this.read_socket = new BufferedReader(new InputStreamReader(clSock.getInputStream()));
+    public ClienteOutput(Socket clSock, Menu menu, ReentrantLock l, Condition c) {
+        this.socket = clSock;
+        try {
+            this.read_socket = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.menu = menu;
         this.lock=l;
         this.cond=c;
@@ -25,7 +27,7 @@ public class ClienteOutput implements Runnable{
         try{
             String linha;
             while((linha = read_socket.readLine())!=null){
-                System.out.println("||"+linha.length()+"||");
+                System.out.println("||"+linha+"||");
                 if(linha.equals("Logged in.")){
                     menu.setOption(1);
                     this.lock.lock();
@@ -38,44 +40,25 @@ public class ClienteOutput implements Runnable{
                     cond.signal();
                     this.lock.unlock();
                 }
-                else if(linha.contains("DOWNLOAD-FILE")){
+                else if(linha.contains("Downloading.")){
+                    //TIRAR O FILESIZE
+                    String aux = linha;
+                    String[] sep_aux = aux.split(" ");
+                    int filesize = Integer.parseInt(sep_aux[1]);
+                    String nome = sep_aux[2];
 
-
-
-                    byte[] bytes = new byte[]
-
-                    String new_path = "./DownloadedMusic/1.mp3";
-                    File musica = new File(new_path);
-                    FileOutputStream fos = new FileOutputStream(musica);
-                    fos.write(bytes);
-                    fos.flush();
-                    fos.close();
-
-
-                    /*
-                    System.out.println("yasidbasid");
-                    String wtf = "";
-                    String aux;
-                    int i = 0;
-                    while(((aux = read_socket.readLine()) != null)){
-                        System.out.println(i);
-                        wtf += aux;
-                        i++;
+                    DataInputStream dis = new DataInputStream(socket.getInputStream());
+                    FileOutputStream fos = new FileOutputStream("DownloadedMusic/" + nome+ ".mp3");
+                    byte[] buffer = new byte[4096];
+                    
+                    int read = 0;
+                    int remaining = filesize;
+                    while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
+                        remaining -= read;
+                        fos.write(buffer, 0, read);
                     }
-
-                    System.out.println("sizeeee="+wtf.length());
-                
-                    byte[] bytes = wtf.getBytes(StandardCharsets.UTF_8);
-                    Files.write(Paths.get("./DownloadedMusic/"+"2.mp3"), bytes);
-                    */
-                    /*
-                    String new_path = "./DownloadedMusic/"+"1.mp3";
-                    File musica = new File(new_path);
-                    FileOutputStream fos = new FileOutputStream(musica);
-                    fos.write(bytes);
-                    fos.flush();
+                    
                     fos.close();
-                    */
                     menu.setOption(1);
                     this.lock.lock();
                     cond.signal();

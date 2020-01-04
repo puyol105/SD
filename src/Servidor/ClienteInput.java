@@ -2,9 +2,7 @@ package Servidor;
 
 import java.io.*;
 import java.net.*;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
-import java.nio.file.*;
 
 public class ClienteInput implements Runnable{
     private BufferedReader cl_input;
@@ -59,6 +57,10 @@ public class ClienteInput implements Runnable{
                         System.out.print("Password: ");
                         input = cl_input.readLine();
                         write_socket.println(input);
+
+                        System.out.print("Name: ");
+                        input = cl_input.readLine();
+                        write_socket.println(input);
                         input="2";
                     }
                     else if(input.equals("0")){
@@ -78,7 +80,7 @@ public class ClienteInput implements Runnable{
 
                         System.out.print("Path to file: ");
                         input = cl_input.readLine();
-                        write_socket.println(input);
+                        String path = input;
 
                         System.out.print("Artist/Band: ");
                         input = cl_input.readLine();
@@ -91,6 +93,22 @@ public class ClienteInput implements Runnable{
                         System.out.print("Labels (separated by spaces): ");
                         input = cl_input.readLine();
                         write_socket.println(input);
+
+                        File file = new File(path);
+                        //ENVIAR TAMANHO
+                        write_socket.println(file.length());
+
+
+                        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                        FileInputStream fis = new FileInputStream(file);
+                        byte[] buffer = new byte[4096];
+                        
+                        while (fis.read(buffer) > 0) {
+                            dos.write(buffer);
+                        }
+                        
+                        fis.close();
+                        //dos.close();	
 
                         input="2";
                     }

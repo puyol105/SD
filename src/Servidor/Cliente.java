@@ -2,15 +2,12 @@ package Servidor;
 
 import java.io.*;
 import java.net.*;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.*;
 
 public class Cliente{
     public final static int SOCKET_PORT = 12345;
     
     public static void main(String[] args){
-        String input = null;
-        Utilizador utilizador = null;
         Socket clSock = null;
         ReentrantLock lock = new ReentrantLock();
         Condition cond = lock.newCondition();
@@ -32,7 +29,7 @@ public class Cliente{
             t_input.join();
             t_output.join();
 
-            read_socket.close();
+            //read_socket.close();
 
             System.out.println("Exited.\n");
             clSock.close();

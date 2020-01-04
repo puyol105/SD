@@ -1,20 +1,24 @@
 package Servidor;
 
-import java.lang.Thread;
 import java.io.*;
-import java.net.*;
+import java.net.Socket;
 import java.util.Collections;
-import java.util.Arrays;
 import java.util.ArrayList;
 
-public class ServerRead implements Runnable{
+public class ServerRead implements Runnable {
+    private Socket socket;
     private BufferedReader read_socket;
     private SoundCloud sc;
     private Utilizador user;
     private ServerMessage sm;
 
-    public ServerRead(InputStream r, SoundCloud s, ServerMessage m){
-        this.read_socket = r;
+    public ServerRead(Socket clSock, SoundCloud s, ServerMessage m) {
+        this.socket = clSock;
+        try {
+            this.read_socket = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.sc = s;
         this.sm = m;
         this.user = null;
@@ -39,8 +43,9 @@ public class ServerRead implements Runnable{
                 else if(input.equals("create_user")){
                     String username = read_socket.readLine();
                     String pass = read_socket.readLine();
+                    String name = read_socket.readLine();
                     try{
-                        sc.createUser(username,pass,sm);
+                        sc.createUser(username,pass,name,sm);
                         sm.setMessage("Created new user.",null);
                     }
                     catch(Exception e){
@@ -49,44 +54,49 @@ public class ServerRead implements Runnable{
                 }
                 else if(input.equals("upload")){
                     String title = read_socket.readLine();
-                    String path = read_socket.readLine();
                     String artist = read_socket.readLine();
                     String ano = read_socket.readLine();
                     String labels = read_socket.readLine();
+                    int filesize = Integer.parseInt(read_socket.readLine()); 
 
                     ArrayList<String> separated_labels = new ArrayList<>();
                     Collections.addAll(separated_labels, labels.split(" "));
-                    File file = new File(path);
-
-                    FileInputStream fis = new FileInputStream(file);
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    byte[] buf = new byte[10000];
-                    int size = 0;
-                    try {
-                        for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                            bos.write(buf, 0, readNum);
-                            size += readNum;
-                        }
-                        System.out.println("Size total: "+size);
-                    } catch (IOException ex) {
-                        sm.setMessage(ex.getMessage(), null);
-                    }
-
-                    byte[] bytes = bos.toByteArray();
-
                     Ficheiro f = new Ficheiro(-1, title, artist, separated_labels, Integer.parseInt(ano));
-                    f = sc.upload(f,bytes);
-
+                    f = sc.upload(f);
+                    
+                    DataInputStream dis = new DataInputStream(socket.getInputStream());
+                    FileOutputStream fos = new FileOutputStream("../MusicFiles/" + f.getId() + "_" + title + ".mp3");
+                    byte[] buffer = new byte[4096];
+                    
+                    int read = 0;
+                    int remaining = filesize;
+                    while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
+                        remaining -= read;
+                        fos.write(buffer, 0, read);
+                    }
+                    
+                    fos.close();                
                     sm.setMessage("Uploaded Music file: "+f.toString(), null);
                 }
                 else if(input.equals("download")){
                     String id_s = read_socket.readLine();
                     Integer id = Integer.parseInt(id_s);
-
+        
                     try{
-                        byte[] bytes = sc.download(id);
+                        Ficheiro f = sc.download(id);
+                        String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
+                        File file = new File(path);
+                        sm.setMessage("Downloading. " + file.length() +" " + f.getNome(), null);
 
-                        sm.setDownload(bytes);
+                        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                        FileInputStream fis = new FileInputStream(file);
+                        byte[] buffer = new byte[4096];
+                        
+                        while (fis.read(buffer) > 0) {
+                            dos.write(buffer);
+                        }
+                        
+                        fis.close();
                     }
                     catch(Exception e){
                         sm.setMessage(e.getMessage(),null);

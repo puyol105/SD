@@ -1,14 +1,11 @@
 package Servidor;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
-import java.util.logging.Level;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 
 public class SoundCloud{
     private HashMap<String, Utilizador> users;
@@ -28,13 +25,13 @@ public class SoundCloud{
     }
 
 
-    public boolean createUser(String username, String pass, ServerMessage sm){
+    public boolean createUser(String username, String pass, String nome, ServerMessage sm){
         this.lockUsers.lock();
 
         //Verificar se username já esta ocupado
         boolean f = users.containsKey(username);
         if (!f){
-            Utilizador u = new Utilizador(username, pass);
+            Utilizador u = new Utilizador(username, pass, nome);
             users.put(username, u);
 
             this.lockMsgs.lock();
@@ -80,79 +77,34 @@ public class SoundCloud{
     }
 
     //Adicionar música
-    public Ficheiro upload(Ficheiro f, byte[] bytes){
+    public Ficheiro upload(Ficheiro f){
         this.lockSC.lock();
 
         int id = this.musicas.size();
         f.setId(id);
 
-        try {
-            String new_path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
-            File musica = new File(new_path);
-            FileOutputStream fos = new FileOutputStream(musica);
-            fos.write(bytes);
-            fos.flush();
-            fos.close();
-        }
-        catch (Exception e) {
-            System.out.println("Exception: " + e);
-        }
-
-
         this.musicas.put(id, f);
-
 
         this.lockSC.unlock();
         return f;
     }
 
-
     //Descarregar música
-    //Ir buscar a musica ao file system para memoria
-    public byte[] download(int id){
+    public Ficheiro download(int id){
         this.lockSC.lock();
-
-        byte[] bytes = null;
-        String r = null;
+        
+        Ficheiro f = null;
         try {
-            Ficheiro f = this.musicas.get(id);
+            f = this.musicas.get(id);
             f.incTimesPlayed();
             this.musicas.put(id, f);
-            
-            String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
-            File file = new File(path);
-            bytes = new byte[(int) file.length()];
-            FileInputStream fis = new FileInputStream(file);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            bis.read(bytes,0,bytes.length);
-
-
-           /* 
-            bytes = Files.readAllBytes(Paths.get(path));
-            r = new String(bytes);
-            FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buf = new byte[50000];
-            int size = 0;
-            for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                bos.write(buf, 0, readNum);
-                size += readNum;
-            }
-            System.out.println("Size total: "+size);
-            bytes = bos.toByteArray();
-            */
         }
         catch (Exception e) {
             System.out.println("Exception: " + e);
         }
 
         this.lockSC.lock();
-        /*
-        String rsplit = r;
-        String[] arr = rsplit.split("\n");
-        System.out.println("sizeresult = "+arr.length);
-*/
-        return bytes;
+        return f;
     }
 
     //Pesquisar música

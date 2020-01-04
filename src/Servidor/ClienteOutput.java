@@ -57,7 +57,9 @@ public class ClienteOutput implements Runnable {
                         remaining -= read;
                         fos.write(buffer, 0, read);
                     }
-                    
+
+                    linha = "";
+                    fos.flush();
                     fos.close();
                     menu.setOption(1);
                     this.lock.lock();

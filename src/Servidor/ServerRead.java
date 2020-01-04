@@ -46,7 +46,7 @@ public class ServerRead implements Runnable {
                         sm.setMessage("Created new user.",null);
                     }
                     catch(Exception e){
-                        sm.setMessage(e.getMessage(),null);
+                        sm.setMessage("Error: " + e.getMessage(),null);
                     }
                 }
                 else if(input.equals("upload")){
@@ -58,21 +58,10 @@ public class ServerRead implements Runnable {
 
                     ArrayList<String> separated_labels = new ArrayList<>();
                     Collections.addAll(separated_labels, labels.split(" "));
-                    Ficheiro f = new Ficheiro(-1, title, artist, separated_labels, Integer.parseInt(ano));
-                    f = sc.upload(f);
                     
-                    DataInputStream dis = new DataInputStream(socket.getInputStream());
-                    FileOutputStream fos = new FileOutputStream("../MusicFiles/" + f.getId() + "_" + title + ".mp3");
-                    byte[] buffer = new byte[4096];
-                    
-                    int read = 0;
-                    int remaining = filesize;
-                    while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
-                        remaining -= read;
-                        fos.write(buffer, 0, read);
-                    }
-                    
-                    fos.close();                
+                    Ficheiro f = new Ficheiro(-1, title, artist, separated_labels, Integer.parseInt(ano));     
+                    f = sc.upload(f,socket, filesize);
+
                     sm.setMessage("Uploaded Music file: "+f.toString(), null);
                 }
                 else if(input.equals("download")){
@@ -83,8 +72,9 @@ public class ServerRead implements Runnable {
                         Ficheiro f = sc.download(id);
                         String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
                         File file = new File(path);
-                        sm.setMessage("Downloading. " + file.length() +" " + f.getNome(), null);
-
+                        sm.setMessage("Downloading. " + file.length() +" " + f.getNome().split(" ")[0], null);
+                        Thread.sleep(1000);
+                        
                         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                         FileInputStream fis = new FileInputStream(file);
                         byte[] buffer = new byte[4096];
@@ -93,10 +83,12 @@ public class ServerRead implements Runnable {
                             dos.write(buffer);
                         }
                         
+                        dos.flush();
                         fis.close();
+                        System.out.println("Download done.");
                     }
                     catch(Exception e){
-                        sm.setMessage(e.getMessage(),null);
+                        sm.setMessage("Error: " +e.getMessage(),null);
                     }
                 }
                 else if(input.equals("search")){
@@ -115,7 +107,7 @@ public class ServerRead implements Runnable {
                         sm.setMessage("", result);
                     }
                     catch(Exception e){
-                        sm.setMessage(e.getMessage(),null);
+                        sm.setMessage("Error: " + e.getMessage(),null);
                     }
                 }
                 else if(input.equals("logout")){

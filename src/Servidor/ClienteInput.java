@@ -92,6 +92,7 @@ public class ClienteInput implements Runnable{
                         write_socket.println(input);
 
                         File file = new File(path);
+                        
                         //ENVIAR TAMANHO
                         write_socket.println(file.length());
 

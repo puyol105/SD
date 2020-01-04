@@ -1,10 +1,13 @@
 package Servidor;
 
+import java.io.DataInputStream;
+import java.io.FileOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class SoundCloud{
+public class SoundCloud {
     private HashMap<String, Utilizador> users;
     private HashMap<Integer, Ficheiro> musicas;
     private HashMap<String, ServerMessage> user_messages;
@@ -12,7 +15,7 @@ public class SoundCloud{
     private ReentrantLock lockUsers;
     private ReentrantLock lockMsgs;
 
-    public SoundCloud(){
+    public SoundCloud() {
         this.users = new HashMap<>();
         this.musicas = new HashMap<>();
         this.user_messages = new HashMap<>();
@@ -21,87 +24,117 @@ public class SoundCloud{
         this.lockMsgs = new ReentrantLock();
     }
 
-
-    public boolean createUser(String username, String pass, ServerMessage sm){
+    public boolean createUser(String username, String pass, ServerMessage sm) {
         this.lockUsers.lock();
 
-        //Verificar se username já esta ocupado
-        boolean f = users.containsKey(username);
-        if (!f){
-            Utilizador u = new Utilizador(username, pass);
-            users.put(username, u);
+        try{
+            // Verificar se username já esta ocupado
+            boolean f = users.containsKey(username);
+            if (!f) {
+                Utilizador u = new Utilizador(username, pass);
+                users.put(username, u);
+
+                this.lockMsgs.lock();
+                user_messages.put(username, sm);
+                this.lockMsgs.unlock();
+            }
+            return !f;
+        }
+        finally{
+            this.lockUsers.unlock();
+        }
+    }
+
+    public Utilizador login(String username, String password, ServerMessage sm) throws UsernameInexistenteException, PasswordIncorretaException {
+        this.lockSC.lock();
+        try{
+            Utilizador u = null;
+
+            if (!users.containsKey(username)) {
+                throw new UsernameInexistenteException("Invalid Username.\n");
+            } else {
+                u = users.get(username);
+
+                if (!u.getPassword().equals(password)) {
+                    throw new PasswordIncorretaException("Incorrect password.\n");
+                }
+            }
 
             this.lockMsgs.lock();
-            user_messages.put(username, sm);
+
+            if (this.user_messages.containsKey(username)) {
+                ServerMessage m = this.user_messages.get(username);
+
+                String linha;
+                while ((linha = m.getMessage()) != null) {
+                    sm.setMessage(linha, null);
+                }
+
+                this.user_messages.put(username, sm);
+            }
+
             this.lockMsgs.unlock();
+            return u;
         }
-
-
-        this.lockUsers.unlock();
-        return !f;
+        finally{
+            this.lockSC.unlock();
+        }
     }
 
-    public Utilizador login(String username, String password, ServerMessage sm) throws UsernameInexistenteException, PasswordIncorretaException{
+    // Adicionar música
+    public Ficheiro upload(Ficheiro f, Socket socket, int filesize) {
         this.lockSC.lock();
+        
+        try {
+            int id = this.musicas.size();
+            f.setId(id);
+            try {
+                DataInputStream dis = new DataInputStream(socket.getInputStream());
+                FileOutputStream fos;
+    
+                fos = new FileOutputStream("../MusicFiles/" + f.getId() + "_" + f.getNome() + ".mp3");
+                byte[] buffer = new byte[4096];
+        
+                int read = 0;
+                int remaining = filesize;
+                while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
+                    remaining -= read;
+                    fos.write(buffer, 0, read);
+                }
+                
+                fos.flush();
+                fos.close();       
+            } catch (Exception e) {
+                e.printStackTrace();
+            }            
+            this.musicas.put(id, f);
 
-        Utilizador u = null;
-
-        if(!users.containsKey(username)){
-            throw new UsernameInexistenteException("Invalid Username.\n");
-        } else{
-            u = users.get(username);
-
-            if (!u.getPassword().equals(password)) {
-                throw new PasswordIncorretaException("Incorrect password.\n");
-            }
+            return f;
         }
-
-        this.lockMsgs.lock();
-        if(this.user_messages.containsKey(username)){
-            ServerMessage m = this.user_messages.get(username);
-
-            String linha;
-            while((linha = m.getMessage())!=null){
-                sm.setMessage(linha, null);
-            }
-
-            this.user_messages.put(username,sm);
+        finally{
+            this.lockSC.unlock();
         }
-        this.lockMsgs.unlock();
-
-        this.lockSC.unlock();
-        return u;
-    }
-
-    //Adicionar música
-    public Ficheiro upload(Ficheiro f){
-        this.lockSC.lock();
-
-        int id = this.musicas.size();
-        f.setId(id);
-
-        this.musicas.put(id, f);
-
-        this.lockSC.unlock();
-        return f;
     }
 
     //Descarregar música
     public Ficheiro download(int id){
         this.lockSC.lock();
-        
-        Ficheiro f = null;
-        try {
-            f = this.musicas.get(id);
-            f.incTimesPlayed();
-            this.musicas.put(id, f);
-        }
-        catch (Exception e) {
-            System.out.println("Exception: " + e);
-        }
 
-        this.lockSC.lock();
-        return f;
+        try{
+            Ficheiro f = null;
+            try {
+                f = this.musicas.get(id);
+                f.incTimesPlayed();
+                this.musicas.put(id, f);
+            }
+            catch (Exception e) {
+                System.out.println("Exception: " + e);
+            }
+            return f;
+        }
+        finally{
+            this.lockSC.lock();
+        }
     }
 
     //Pesquisar música

@@ -17,13 +17,12 @@ public class Servidor {
         try{
             while((clSock = serverSocket.accept()) != null){
                 System.out.println("Ola sou uma pessoa");
-                PrintWriter write_socket = new PrintWriter(clSock.getOutputStream(),true);
-
+                
                 Condition cond = lock.newCondition();
                 ServerMessage sm = new ServerMessage(cond,lock);
 
                 ServerRead server_read = new ServerRead(clSock,sc,sm);
-                ServerWrite server_write = new ServerWrite(write_socket,sm);
+                ServerWrite server_write = new ServerWrite(clSock,sm);
                 Thread t_read = new Thread(server_read);
                 Thread t_write = new Thread(server_write);
                 t_read.start();

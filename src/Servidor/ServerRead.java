@@ -9,7 +9,6 @@ public class ServerRead implements Runnable {
     private Socket socket;
     private BufferedReader read_socket;
     private SoundCloud sc;
-    private Utilizador user;
     private ServerMessage sm;
 
     public ServerRead(Socket clSock, SoundCloud s, ServerMessage m) {
@@ -21,7 +20,6 @@ public class ServerRead implements Runnable {
         }
         this.sc = s;
         this.sm = m;
-        this.user = null;
     }
 
     public void run(){
@@ -33,7 +31,7 @@ public class ServerRead implements Runnable {
                     String pass = read_socket.readLine();
 
                     try{
-                        this.user = sc.login(username,pass,sm);
+                        sc.login(username,pass,sm);
                         sm.setMessage("Logged in.",null);
                     }
                     catch(Exception e){
@@ -43,9 +41,8 @@ public class ServerRead implements Runnable {
                 else if(input.equals("create_user")){
                     String username = read_socket.readLine();
                     String pass = read_socket.readLine();
-                    String name = read_socket.readLine();
                     try{
-                        sc.createUser(username,pass,name,sm);
+                        sc.createUser(username,pass,sm);
                         sm.setMessage("Created new user.",null);
                     }
                     catch(Exception e){
@@ -122,7 +119,6 @@ public class ServerRead implements Runnable {
                     }
                 }
                 else if(input.equals("logout")){
-                    this.user = null;
                     sm.setMessage("Logged out.",null);
                 }
             }

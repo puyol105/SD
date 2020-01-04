@@ -3,9 +3,6 @@ package Servidor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class SoundCloud{
     private HashMap<String, Utilizador> users;
@@ -25,13 +22,13 @@ public class SoundCloud{
     }
 
 
-    public boolean createUser(String username, String pass, String nome, ServerMessage sm){
+    public boolean createUser(String username, String pass, ServerMessage sm){
         this.lockUsers.lock();
 
         //Verificar se username já esta ocupado
         boolean f = users.containsKey(username);
         if (!f){
-            Utilizador u = new Utilizador(username, pass, nome);
+            Utilizador u = new Utilizador(username, pass);
             users.put(username, u);
 
             this.lockMsgs.lock();

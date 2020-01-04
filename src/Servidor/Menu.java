@@ -1,12 +1,6 @@
 package Servidor;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.InputMismatchException;
-
 public class Menu {
-    private String menu;
     private int option;
 
     public void show() {

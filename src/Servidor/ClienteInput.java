@@ -31,7 +31,7 @@ public class ClienteInput implements Runnable{
 
         try{
             menu.show();
-            while((input = cl_input.readLine())!= null){
+            while((input = cl_input.readLine()) != null){
                 if(menu.getOption() == 0){
                     if(input.equals("1")){
                         write_socket.println("login");
@@ -64,6 +64,7 @@ public class ClienteInput implements Runnable{
                         break;
                     }
                     if(input.equals("1") || input.equals("2") || input.equals("0")){
+                        space();
                         menu.show();
                     }
                     else System.out.println("Invalid option.");
@@ -106,28 +107,29 @@ public class ClienteInput implements Runnable{
                         }
                         
                         fis.close();
-                        //dos.close();	
 
-                        input="2";
+                        input="1";
                     }
                     else if(input.equals("2")){
                         write_socket.println("download");
                         System.out.print("ID: ");
                         input = cl_input.readLine();
                         write_socket.println(input);
+                        input = "2";
                     }
                     else if(input.equals("3")){
                         write_socket.println("search");
                         System.out.print("Labels (separated by spaces): ");
                         input = cl_input.readLine();
                         write_socket.println(input);
-                        input="2";
+                        input="3";
                     }
                     else if(input.equals("0")){
                         write_socket.println("logout");
                         break;
                     }
-                    if(input.equals("2") || input.equals("0")){
+                    if(input.equals("1") || input.equals("2") || input.equals("3") || input.equals("0")){
+                        space();
                         menu.show();
                     }
                     else System.out.println("Invalid option.");
@@ -140,5 +142,10 @@ public class ClienteInput implements Runnable{
         }
 
     }
+  
+    private void space(){
+		for(int i = 0;i<40;i++)
+			System.out.println();
+	}
 }
 

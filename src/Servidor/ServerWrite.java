@@ -32,7 +32,7 @@ public class ServerWrite implements Runnable {
             while(true){
                 while((linha = sm.getMessage())==null)
                     c.await();
-                if(linha.equals("Exit."))
+                if(linha.equals("Exited."))
                     break;
                 if(linha.contains("Logged")
                 || linha.contains("Created")

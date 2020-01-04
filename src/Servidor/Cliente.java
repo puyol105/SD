@@ -18,8 +18,8 @@ public class Cliente{
             Menu menu = new Menu();
 
             ClienteInput client_input = new ClienteInput(clSock,menu,lock, cond);
-
             ClienteOutput client_output = new ClienteOutput(clSock,menu,lock, cond);
+
             Thread t_input = new Thread(client_input);
             Thread t_output = new Thread(client_output);
 
@@ -29,11 +29,10 @@ public class Cliente{
             t_input.join();
             t_output.join();
 
-            //read_socket.close();
+            client_output.getReadSocket().close();
 
-            System.out.println("Exited.\n");
+            System.out.println("Exited.");
             clSock.close();
-
         }
         catch(IOException e){
             System.out.println(e.getMessage());

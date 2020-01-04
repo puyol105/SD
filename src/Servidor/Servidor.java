@@ -13,10 +13,10 @@ public class Servidor {
         Socket clSock = null;
         ReentrantLock lock = new ReentrantLock();
 
-        System.out.println("Ola sou um servidor muito lindo");
+        System.out.println("Server started.");
         try{
             while((clSock = serverSocket.accept()) != null){
-                System.out.println("Ola sou uma pessoa");
+                System.out.println("Client connected.");
                 
                 Condition cond = lock.newCondition();
                 ServerMessage sm = new ServerMessage(cond,lock);
@@ -29,6 +29,7 @@ public class Servidor {
                 t_write.start();
             }
             serverSocket.close();
+            System.out.println("Client disconnected.");
         }
         catch(IOException e){
             System.out.println(e.getMessage());

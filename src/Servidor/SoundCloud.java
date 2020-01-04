@@ -46,38 +46,43 @@ public class SoundCloud {
     }
 
     public Utilizador login(String username, String password, ServerMessage sm) throws UsernameInexistenteException, PasswordIncorretaException {
-        this.lockSC.lock();
+        this.lockUsers.lock();
+
         try{
-            Utilizador u = null;
-
-            if (!users.containsKey(username)) {
-                throw new UsernameInexistenteException("Invalid Username.\n");
-            } else {
-                u = users.get(username);
-
-                if (!u.getPassword().equals(password)) {
-                    throw new PasswordIncorretaException("Incorrect password.\n");
-                }
+            if(!this.users.containsKey(username)){
+                throw new UsernameInexistenteException("Invalid username.");
             }
-
-            this.lockMsgs.lock();
-
-            if (this.user_messages.containsKey(username)) {
-                ServerMessage m = this.user_messages.get(username);
-
-                String linha;
-                while ((linha = m.getMessage()) != null) {
-                    sm.setMessage(linha, null);
-                }
-
-                this.user_messages.put(username, sm);
+            else if(!this.users.get(username).getPassword().equals(password)){
+                    throw new PasswordIncorretaException("Invalid password.");
             }
-
-            this.lockMsgs.unlock();
-            return u;
         }
         finally{
-            this.lockSC.unlock();
+            this.lockUsers.unlock();
+        }
+
+        this.lockMsgs.lock();
+        try{
+            if(this.user_messages.containsKey(username)){
+                ServerMessage m = this.user_messages.get(username);
+                
+                String linha;
+                while((linha = m.getMessage()) != null){
+                    sm.setMessage(linha, null);
+                }
+                this.user_messages.put(username, sm);
+            }
+        }
+        finally{
+            this.lockMsgs.unlock();
+        }
+
+        this.lockUsers.lock();
+
+        try{
+            return this.users.get(username);
+        }
+        finally{
+            this.lockUsers.unlock();
         }
     }
 

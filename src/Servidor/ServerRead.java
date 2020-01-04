@@ -32,10 +32,10 @@ public class ServerRead implements Runnable {
 
                     try{
                         sc.login(username,pass,sm);
-                        sm.setMessage("Logged in.",null);
+                        sm.setMessage("Logged in.", null);
                     }
                     catch(Exception e){
-                        sm.setMessage(e.getMessage(),null);
+                        sm.setMessage(e.getMessage(), null);
                     }
                 }
                 else if(input.equals("create_user")){
@@ -73,7 +73,6 @@ public class ServerRead implements Runnable {
                         String path = "../MusicFiles/"+ f.getId() + "_" + f.getNome() + ".mp3";
                         File file = new File(path);
                         sm.setMessage("Downloading. " + file.length() +" " + f.getNome().split(" ")[0], null);
-                        Thread.sleep(1000);
                         
                         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                         FileInputStream fis = new FileInputStream(file);

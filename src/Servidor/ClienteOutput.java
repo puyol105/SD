@@ -27,20 +27,22 @@ public class ClienteOutput implements Runnable {
         try{
             String linha;
             while((linha = read_socket.readLine())!=null){
-                System.out.println("||"+linha+"||");
                 if(linha.equals("Logged in.")){
+                    System.out.println("||"+linha+"||");
                     menu.setOption(1);
                     this.lock.lock();
                     cond.signal();
                     this.lock.unlock();
                 }
                 else if(linha.equals("Logged out.") || linha.equals("Invalid Username.") || linha.equals("Incorrect Password.")){
+                    System.out.println("||"+linha+"||");
                     menu.setOption(0);
                     this.lock.lock();
                     cond.signal();
                     this.lock.unlock();
                 }
                 else if(linha.contains("Downloading.")){
+                    System.out.println("||"+linha+"||");
                     //TIRAR O FILESIZE
                     String aux = linha;
                     String[] sep_aux = aux.split(" ");
@@ -58,10 +60,10 @@ public class ClienteOutput implements Runnable {
                         fos.write(buffer, 0, read);
                     }
 
-                    linha = "";
                     fos.flush();
                     fos.close();
                     menu.setOption(1);
+
                     this.lock.lock();
                     cond.signal();
                     this.lock.unlock();
@@ -71,6 +73,10 @@ public class ClienteOutput implements Runnable {
         catch(Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public BufferedReader getReadSocket(){
+        return this.read_socket;
     }
 }
 

@@ -43,6 +43,7 @@ public class ServerWrite implements Runnable {
                 || linha.contains(("Error"))){
                     this.write_socket.println(linha);
                 }
+                write_socket.flush();
             }
         }
         catch(Exception e){

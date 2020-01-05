@@ -100,12 +100,13 @@ public class ClienteInput implements Runnable{
                         
                         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                         FileInputStream fis = new FileInputStream(file);
-                        byte[] buffer = new byte[4096];
+                        byte[] buffer = new byte[1048];
                         
                         while (fis.read(buffer) > 0) {
                             dos.write(buffer);
                         }
 
+                        socket.getOutputStream().flush();
                         dos.flush();
                         fis.close();
 
@@ -135,6 +136,7 @@ public class ClienteInput implements Runnable{
                     }
                     else System.out.println("Invalid option.");
                 }
+                write_socket.flush();
             }
             socket.shutdownOutput();
         }

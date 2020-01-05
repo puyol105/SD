@@ -76,12 +76,13 @@ public class ServerRead implements Runnable {
                         
                         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                         FileInputStream fis = new FileInputStream(file);
-                        byte[] buffer = new byte[4096];
+                        byte[] buffer = new byte[1048];
                         
                         while (fis.read(buffer) > 0) {
                             dos.write(buffer);
                         }
                         
+                        socket.getOutputStream().flush();
                         dos.flush();
                         fis.close();
                         System.out.println("Download done.");
@@ -112,7 +113,6 @@ public class ServerRead implements Runnable {
                 else if(input.equals("logout")){
                     sm.setMessage("Logged out.",null);
                 }
-                //read_socket.reset();
             }
             read_socket.close();
             sm.setMessage("Exit.",null);

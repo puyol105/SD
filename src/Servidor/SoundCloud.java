@@ -98,7 +98,7 @@ public class SoundCloud {
                 FileOutputStream fos;
     
                 fos = new FileOutputStream("../MusicFiles/" + f.getId() + "_" + f.getNome() + ".mp3");
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[1048];
         
                 int read = 0;
                 int remaining = filesize;
@@ -107,7 +107,6 @@ public class SoundCloud {
                     fos.write(buffer, 0, read);
                 }
                 
-                //dis.reset();
                 fos.flush();
                 fos.close();       
             } catch (Exception e) {

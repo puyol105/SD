@@ -34,7 +34,10 @@ public class ClienteOutput implements Runnable {
                     cond.signal();
                     this.lock.unlock();
                 }
-                else if(linha.equals("Logged out.") || linha.equals("Invalid Username.") || linha.equals("Incorrect Password.")){
+                else if(linha.equals("Logged out.")
+                     || linha.equals("Invalid Username.")
+                     || linha.equals("Incorrect Password.")
+                     || linha.contains("Created")){
                     System.out.println("||"+linha+"||");
                     menu.setOption(0);
                     this.lock.lock();
@@ -43,6 +46,7 @@ public class ClienteOutput implements Runnable {
                 }
                 else if(linha.contains("Downloading.")){
                     System.out.println("||"+linha+"||");
+                    
                     //TIRAR O FILESIZE
                     String aux = linha;
                     String[] sep_aux = aux.split(" ");
@@ -51,7 +55,7 @@ public class ClienteOutput implements Runnable {
 
                     DataInputStream dis = new DataInputStream(socket.getInputStream());
                     FileOutputStream fos = new FileOutputStream("DownloadedMusic/" + nome+ ".mp3");
-                    byte[] buffer = new byte[4096];
+                    byte[] buffer = new byte[1048];
                     
                     int read = 0;
                     int remaining = filesize;
@@ -59,8 +63,8 @@ public class ClienteOutput implements Runnable {
                         remaining -= read;
                         fos.write(buffer, 0, read);
                     }
-
-                    // dis.reset();
+                    
+                    socket.getOutputStream().flush();
                     fos.flush();
                     fos.close();
                     menu.setOption(1);
@@ -84,7 +88,6 @@ public class ClienteOutput implements Runnable {
                 else if(linha.contains("ID") || linha.contains("Search")){
                     System.out.println("||"+linha+"||");
                 }
-                //read_socket.reset();
             }
         }
         catch(Exception e){

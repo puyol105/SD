@@ -64,7 +64,7 @@ public class ClienteInput implements Runnable{
                         break;
                     }
                     if(input.equals("1") || input.equals("2") || input.equals("0")){
-                        space();
+                        //cleanScreen();
                         menu.show();
                     }
                     else System.out.println("Invalid option.");
@@ -97,7 +97,7 @@ public class ClienteInput implements Runnable{
                         //ENVIAR TAMANHO
                         write_socket.println(file.length());
 
-
+                        
                         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                         FileInputStream fis = new FileInputStream(file);
                         byte[] buffer = new byte[4096];
@@ -105,7 +105,8 @@ public class ClienteInput implements Runnable{
                         while (fis.read(buffer) > 0) {
                             dos.write(buffer);
                         }
-                        
+
+                        dos.flush();
                         fis.close();
 
                         input="1";
@@ -129,7 +130,7 @@ public class ClienteInput implements Runnable{
                         break;
                     }
                     if(input.equals("1") || input.equals("2") || input.equals("3") || input.equals("0")){
-                        space();
+ //                       cleanScreen();
                         menu.show();
                     }
                     else System.out.println("Invalid option.");
@@ -143,9 +144,8 @@ public class ClienteInput implements Runnable{
 
     }
   
-    private void space(){
-		for(int i = 0;i<40;i++)
+    private void cleanScreen(){
+		for(int i = 0; i<50; i++)
 			System.out.println();
 	}
 }
-

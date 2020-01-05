@@ -24,21 +24,21 @@ public class SoundCloud {
         this.lockMsgs = new ReentrantLock();
     }
 
-    public boolean createUser(String username, String pass, ServerMessage sm) {
+    public void createUser(String username, String pass, ServerMessage sm) throws UsernameTakenException {
         this.lockUsers.lock();
-
         try{
-            // Verificar se username já esta ocupado
-            boolean f = users.containsKey(username);
-            if (!f) {
-                Utilizador u = new Utilizador(username, pass);
-                users.put(username, u);
-
-                this.lockMsgs.lock();
-                user_messages.put(username, sm);
-                this.lockMsgs.unlock();
+            if(this.users.containsKey(username)){
+                throw new UsernameTakenException("Username already taken.");
             }
-            return !f;
+            else {
+                Utilizador u = new Utilizador(username ,pass);
+                this.users.put(username,u);
+                this.lockMsgs.lock();
+                try{
+                    this.user_messages.put(username, sm);
+                }
+                finally{this.lockMsgs.unlock();}
+            }
         }
         finally{
             this.lockUsers.unlock();
@@ -107,6 +107,7 @@ public class SoundCloud {
                     fos.write(buffer, 0, read);
                 }
                 
+                //dis.reset();
                 fos.flush();
                 fos.close();       
             } catch (Exception e) {
@@ -127,14 +128,9 @@ public class SoundCloud {
 
         try{
             Ficheiro f = null;
-            try {
-                f = this.musicas.get(id);
-                f.incTimesPlayed();
-                this.musicas.put(id, f);
-            }
-            catch (Exception e) {
-                System.out.println("Exception: " + e);
-            }
+            f = this.musicas.get(id);
+            f.incTimesPlayed();
+            this.musicas.put(id, f);
             return f;
         }
         finally{
@@ -145,18 +141,21 @@ public class SoundCloud {
     //Pesquisar música
     public ArrayList<Ficheiro> search(String label){
         this.lockSC.lock();
-        String[] separated_labels = label.split(" ");
+        try{
+            String[] separated_labels = label.split(" ");
 
-        ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
-        for (Ficheiro f : this.musicas.values()) {
-            for (String l : separated_labels) {
-                if (f.getLabels().contains(l))
-                    lista.add(f);
+            ArrayList<Ficheiro> lista = new ArrayList<Ficheiro>();
+            for (Ficheiro f : this.musicas.values()) {
+                for (String l : separated_labels) {
+                    if (f.getLabels().contains(l))
+                        lista.add(f);
+                }
             }
+            return lista;
         }
-
-        this.lockSC.unlock();
-        return lista;
+        finally{
+            this.lockSC.unlock();
+        }
     }
 }
 

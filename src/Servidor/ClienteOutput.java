@@ -60,6 +60,7 @@ public class ClienteOutput implements Runnable {
                         fos.write(buffer, 0, read);
                     }
 
+                    // dis.reset();
                     fos.flush();
                     fos.close();
                     menu.setOption(1);
@@ -68,6 +69,22 @@ public class ClienteOutput implements Runnable {
                     cond.signal();
                     this.lock.unlock();
                 }
+                else if(linha.contains("Error")){
+                    System.out.println("||"+linha+"||");
+                    if(linha.contains("username") || linha.contains("password")){
+                        menu.setOption(0);
+                    }
+                    else{
+                        menu.setOption(1);
+                    }
+                    this.lock.lock();
+                    cond.signal();
+                    this.lock.unlock();
+                }
+                else if(linha.contains("ID") || linha.contains("Search")){
+                    System.out.println("||"+linha+"||");
+                }
+                //read_socket.reset();
             }
         }
         catch(Exception e){
@@ -79,4 +96,3 @@ public class ClienteOutput implements Runnable {
         return this.read_socket;
     }
 }
-

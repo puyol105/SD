@@ -35,7 +35,7 @@ public class ServerRead implements Runnable {
                         sm.setMessage("Logged in.", null);
                     }
                     catch(Exception e){
-                        sm.setMessage(e.getMessage(), null);
+                        sm.setMessage("Error: " + e.getMessage(), null);
                     }
                 }
                 else if(input.equals("create_user")){
@@ -112,6 +112,7 @@ public class ServerRead implements Runnable {
                 else if(input.equals("logout")){
                     sm.setMessage("Logged out.",null);
                 }
+                //read_socket.reset();
             }
             read_socket.close();
             sm.setMessage("Exit.",null);

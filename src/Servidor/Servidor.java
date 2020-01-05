@@ -29,7 +29,7 @@ public class Servidor {
                 t_write.start();
             }
             serverSocket.close();
-            System.out.println("Client disconnected.");
+            System.out.println("Disconnected.");
         }
         catch(IOException e){
             System.out.println(e.getMessage());

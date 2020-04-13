@@ -1,4 +1,4 @@
-# SD_19
+# Sistemas Distribuídos
 Trabalho prático SD 19/20
 
 **Compilar:**
